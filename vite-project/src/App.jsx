@@ -8,35 +8,48 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import LogoutIcon from '@mui/icons-material/Logout';
+import CssBaseline from "@mui/material/CssBaseline";
+import Locations from "./pages/LocationsList";
+import ClientList from "./pages/ClientList";
+
 
 export default function App() {
     return (
         <>
         <div>
-        <Routes>
-            <Route path="/" element={<Home /> } />
-            <Route path="/client" element={<ClientData />} />
-            <Route path="/office" element={<OfficeData/>} />
-        </Routes>
         <Box 
-        sx={{ flexGrow: 1 }}
+        sx={{ 
+          display: 'flex',
+          width: '100%' ,
+          minWidth: '100vw',
+          flexGrow: 1 }}
         >
-      <AppBar position="static">
+      <AppBar 
+      position="static"
+      sx={{
+        width: '100%',
+      }}>
         <Toolbar>
-          
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Sales Department
           </Typography>
           <Button color="inherit"> Client Details </Button>
           <Button color="inherit"> Sales Locations </Button>
-          <Button color="inherit">Logout</Button>
+          <LogoutIcon sx={{ ml: 2 }}></LogoutIcon>
         </Toolbar>
       </AppBar>
     </Box>
-        
+    
+    <CssBaseline />
+        <Routes>
+            <Route path="/" element={<Home /> } />
+            <Route path="/clientform" element={<ClientData />} />
+            <Route path="/locationform" element={<OfficeData/>} />
+            <Route path='/clients' element={<ClientList />} />
+            <Route path='/locations' element={<Locations />} />
+        </Routes>
         </div>
-
         </>
     )
 }
