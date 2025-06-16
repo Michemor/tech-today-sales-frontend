@@ -15,7 +15,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import Radio from "@mui/material/Radio";
 import Stack from "@mui/material/Stack";
-import { Form } from "react-router";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
@@ -84,7 +83,7 @@ const ClientData = () => {
     };
 
 
-    const [internet_connected, setInternetConnected] = useState("");
+    const [internet_connected, setInternetConnected] = useState("No");
     let isConnected = internet_connected === "Yes";
 
     const [provider, setProvider] = useState("");
@@ -95,19 +94,21 @@ const ClientData = () => {
     const [product, setProduct] = useState("");
     const [deal_status, setDealStatus] = useState("");
 
+    // Function to handle provider change based on internet connection status
 
-    const handleProviderChange = (event) => {
+    const handleInternetConnectedChange = (event) => {
         const value = event.target.value;
-        setInternetConnected(isConnected ? "Yes" : "No");
-        if (value === "No") {
-            setProvider("");
-            setInternetPrice("");
-            setTypeOfConnection("");
-            setExtraNetInfo("");
-            setProduct("");
-            setDealStatus("");
-        }
-    };
+        setInternetConnected(value);
+        if (value === "No") { 
+        setProvider("");
+        setInternetPrice("");
+        setTypeOfConnection("");
+        setExtraNetInfo("");
+        setProduct("");
+        setDealStatus("");
+    }
+}
+
 
     // Function to handle form submission
     const handleSubmit = (event) => {
@@ -145,7 +146,7 @@ const ClientData = () => {
                 borderBottom: 1,
                 borderColor: 'divider',
                 display: 'flex',
-                justifyContent: 'space-evenly',
+                justifyContent: 'center',
                 marginTop: 2,
             }}>
                 <Tab label="Client Details" value="1" />
@@ -170,14 +171,14 @@ const ClientData = () => {
                 value={first_name}
                 onChange={(e) => setFirstName(e.target.value)}
                 variant="outlined"
-                validateInput={validateInput(first_name)}
+                validateinput={validateInput(first_name)}
                 fullWidth
                 sx={{ mt: 2 }}/>
             <TextField
                 label="Last Name"
                 value={last_name}
                 onChange={(e) => setLastName(e.target.value)}
-                validateInput={validateInput(last_name)}
+                validateinput={validateInput(last_name)}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
@@ -187,7 +188,7 @@ const ClientData = () => {
                 label="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                validateInput={validateInput(email)}
+                validateinput={validateInput(email)}
                 helperText="Please enter a valid email address"
                 variant="outlined"
                 fullWidth
@@ -197,14 +198,14 @@ const ClientData = () => {
                 type="tel"
                 value={contact_number}
                 onChange={(e) => setContactNumber(e.target.value)}
-                validateInput={validateInput(contact_number)}
+                validateinput={validateInput(contact_number)}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
             <TextField
                 label="Job Title"
                 value={job_title}
-                validateInput={validateInput(job_title)}
+                validateinput={validateInput(job_title)}
                 onChange={(e) => setJobTitle(e.target.value)}
                 variant="outlined"
                 fullWidth
@@ -230,7 +231,7 @@ const ClientData = () => {
                 required
                 type="date"
                 value={meeting_date}
-                validateInput={validateInput(meeting_date)}
+                validateinput={validateInput(meeting_date)}
                 onChange={(e) => setMeetingDate(e.target.value)}
                 variant="outlined"
                 fullWidth
@@ -238,7 +239,7 @@ const ClientData = () => {
             <TextField
                 label="Meeting Location"
                 value={meeting_location}
-                validateInput={validateInput(meeting_location)}
+                validateinput={validateInput(meeting_location)}
                 onChange={(e) => setMeetingLocation(e.target.value)}
                 variant="outlined"
                 fullWidth
@@ -247,7 +248,7 @@ const ClientData = () => {
                 type="meeting_remarks"
                 label="Meeting Remarks"
                 value={meeting_remarks}
-                validateInput={validateInput(meeting_remarks)}
+                validateinput={validateInput(meeting_remarks)}
                 onChange={(e) => setMeetingRemarks(e.target.value)}
                 variant="outlined"
                 fullWidth
@@ -256,7 +257,7 @@ const ClientData = () => {
                 options={['Scheduled', 'Completed', 'Cancelled']}
                 value={meeting_status}
                 onChange={(event, newValue) => setMeetingStatus(newValue)}
-                validateInput={validateInput(meeting_status)}
+                validateinput={validateInput(meeting_status)}
                 renderInput={(params) => <TextField {...params} label="Meeting Status" />}
                 fullWidth
                 sx={{ mt: 2 }}/>
@@ -343,8 +344,7 @@ const ClientData = () => {
                         <RadioGroup
                         value={internet_connected}
                         validateInput={validateInput(internet_connected)}
-                        onChange={(e) => {
-                            setInternetConnected(e.target.value); }}
+                        onChange={handleInternetConnectedChange}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2
@@ -522,10 +522,7 @@ const ClientData = () => {
                 margin: '0 auto',
                 display: 'block',
                 }}
-                variant="contained" color="primary" onClick = {
-                    
-                    handleSubmit
-                    } > Submit </Button>
+                variant="contained" color="primary" onClick = {() => handleSubmit()} > Submit </Button>
             </Collapse>
         </Box>
         </>
