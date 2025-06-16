@@ -5,106 +5,123 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { useState } from "react";
 import Tab from "@mui/material/Tab";
-
+import Tabs from "@mui/material/Tabs";
+import Collapse from "@mui/material/Collapse";
 
 const ClientData = () => {
+  const [value, setValue] = useState("1");
 
-    const [value, setValue] = useState('1');
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-   const handleChange = (event, newValue) => {
-        setValue(newValue);
-    }
+  return (
+    <>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        aria-label="basic tabs example"
+      >
+        <Tab label="Item One" value={"1"} />
+        <Tab label="Item Two" value={"2"} />
+        <Tab label="Item Three" value={"3"} />
+      </Tabs>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          maxWidth: "500vw",
+        }}
+      >
+        <Typography
+          sx={{
+            textAlign: "center",
+            mt: 5,
+            fontWeight: "bold",
+            fontSize: 20,
+            color: "#03a9f4",
+          }}
+        >
+          {" "}
+          Sales Office{" "}
+        </Typography>
 
-    return (
-        <div>
-            <TabContext value={value}>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                maxWidth: '500vw',
-            }}>
-            <Typography sx={{
-                textAlign: 'center',
-                mt: 5,
-                fontWeight: 'bold',
-                fontSize: 20,
-                color: '#03a9f4'
-            }}> Sales Office </Typography>
+        <Divider
+          middle
+          aria-hidden="true"
+          sx={{
+            mr: 5,
+            ml: 5,
+          }}
+        />
 
-            <TabList onChange={handleChange} aria-label="Client Details">
-                <Tab label="Client Details" value="1" />
-                <Tab label="Meeting Details" value="2" />
-                <Tab label="Office Details" value="3" />
-                <Tab label="Client Inquries " value="4" />
-
-            </TabList>
-            <Divider middle aria-hidden='true' sx={{
-                mr: 5,
-                ml: 5,
-            }} />
-           
-         <FormControl
-            title="Client Details"
+        <FormControl
+          title="Client Details"
+          sx={{
+            ml: 4,
+            mr: 4,
+          }}
+        >
+          <Typography
             sx={{
-                ml: 4,
-                mr: 4,
-            }}>
-                <TabPanel value="1"> 
-                    <Typography sx={{
-                mt: 5,
-                fontWeight: 'bold',
-                fontSize: 20,
-                color: '#03a9f4'
-            }}> Client Details </Typography>
-            <InputBox 
-            id='f-name'
-            label='First Name'
-            variant="outlined"
-            required
+              mt: 5,
+              fontWeight: "bold",
+              fontSize: 20,
+              color: "#03a9f4",
+            }}
+          >
+            {" "}
+            Client Details{" "}
+          </Typography>
+          <Collapse in={value === "1"}>
+            <InputBox
+              id="f-name"
+              label="First Name"
+              variant="outlined"
+              required
             />
-            <InputBox 
-            id='l-name'
-            label='Last Name'
-            variant="outlined"
-            required
+            <InputBox
+              id="l-name"
+              label="Last Name"
+              variant="outlined"
+              required
             />
-            <InputBox 
-            id='contact'
-            label='Contact'
-            variant="outlined"
-            required
+          </Collapse>
+          <Collapse in={value === "2"}>
+            <InputBox
+              id="contact"
+              label="Contact"
+              variant="outlined"
+              required
             />
-            <InputBox 
-            id='email'
-            label='Email'
-            variant="outlined"
-            required
+            <InputBox id="email" label="Email" variant="outlined" required />
+            <InputBox
+              id="job-title"
+              label="Job Title"
+              variant="outlined"
+              required
             />
-            <InputBox 
-            id='job-title'
-            label='Job Title'
-            variant="outlined"
-            required
-            />
-             <Divider middle aria-hidden='true' sx={{
+            <Divider
+              middle
+              aria-hidden="true"
+              sx={{
                 mr: 5,
                 ml: 5,
-            }} />
-           
-            <InputBox 
-            id='m-date'
-            label='Meeting Date'
-            variant="outlined"
-            required
+              }}
             />
-                </TabPanel>
-            
-          </FormControl>
-            </Box>
-            </TabContext>
-        </div>
-    );
-}
+
+            <InputBox
+              id="m-date"
+              label="Meeting Date"
+              variant="outlined"
+              required
+            />
+          </Collapse>
+        </FormControl>
+      </Box>
+    </>
+  );
+};
 
 export default ClientData;
