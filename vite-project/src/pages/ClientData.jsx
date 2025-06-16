@@ -4,17 +4,21 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { useState } from "react";
+import React from "react";
 import Tab from "@mui/material/Tab";
 
 
-
 const ClientData = () => {
+  const [value, setValue] = useState("1");
 
-    const [value, setValue] = useState('1');
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-   const handleChange = (event, newValue) => {
-        setValue(newValue);
-    }
+  // Form state variables
+  // These will hold the values for the form fields
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
 
     return (
         <div>
@@ -38,6 +42,7 @@ const ClientData = () => {
                 <Tab label="Meeting Details" value="2" />
                 <Tab label="Office Details" value="3" />
                 <Tab label="Client Inquries " value="4" />
+
             </TabList>
             <Divider middle aria-hidden='true' sx={{
                 mr: 5,
@@ -75,36 +80,33 @@ const ClientData = () => {
             variant="outlined"
             required
             />
-            <InputBox 
-            id='email'
-            label='Email'
-            variant="outlined"
-            required
+            <InputBox id="email" label="Email" variant="outlined" required />
+            <InputBox
+              id="job-title"
+              label="Job Title"
+              variant="outlined"
+              required
             />
-            <InputBox 
-            id='job-title'
-            label='Job Title'
-            variant="outlined"
-            required
-            />
-             <Divider middle aria-hidden='true' sx={{
+            <Divider
+              middle
+              aria-hidden="true"
+              sx={{
                 mr: 5,
                 ml: 5,
-            }} />
-           
-            <InputBox 
-            id='m-date'
-            label='Meeting Date'
-            variant="outlined"
-            required
+              }}
             />
-                </TabPanel>
-            
-          </FormControl>
-            </Box>
-            </TabContext>
-        </div>
-    );
-}
+
+            <InputBox
+              id="m-date"
+              label="Meeting Date"
+              variant="outlined"
+              required
+            />
+          </Collapse>
+        </FormControl>
+      </Box>
+    </>
+  );
+};
 
 export default ClientData;
