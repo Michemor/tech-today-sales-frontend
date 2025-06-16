@@ -7,6 +7,7 @@ import { useState } from "react";
 import Tab from "@mui/material/Tab";
 
 
+
 const ClientData = () => {
 
     const [value, setValue] = useState('1');
@@ -37,7 +38,6 @@ const ClientData = () => {
                 <Tab label="Meeting Details" value="2" />
                 <Tab label="Office Details" value="3" />
                 <Tab label="Client Inquries " value="4" />
-
             </TabList>
             <Divider middle aria-hidden='true' sx={{
                 mr: 5,
