@@ -27,6 +27,18 @@ const ClientData = () => {
     setValue(newValue);
   };
 
+  // Function to handle next button click
+    const handleNext = () => {
+        if (value === "1") { 
+            setValue("2");
+        }
+        else if (value === "2") {
+            setValue("3");
+        } else if (value === "3") {
+            setValue("4");
+        }
+    };
+
 
     // State to hold client details
     const [first_name, setFirstName] = useState("");
@@ -55,31 +67,12 @@ const ClientData = () => {
     const [number_staff, setNumberStaff] = useState("");
     const [industry_category, setIndustryCategory] = useState("");
 
+
     // set internet status information
-    const [internet_connected, setInternetConnected] = useState("No");
-    const [provider, setProvider] = useState("");
-    const [internet_price, setInternetPrice] = useState("");
-    const [type_of_connection, setTypeOfConnection] = useState(""); 
-    const [extra_net_info, setExtraNetInfo] = useState("");
-
-    const [product, setProduct] = useState("");
-    const [deal_status, setDealStatus] = useState("");
-
-    // Function to handle next button click
-    const handleNext = () => {
-        if (value === "1") { 
-            setValue("2");
-        }
-        else if (value === "2") {
-            setValue("3");
-        } else if (value === "3") {
-            setValue("4");
-        }
-    };
-
     
-// validate input fields
-  const validateInput = (input) => {
+    
+    // validate input fields
+    const validateInput = (input) => {
         if (!input || input.trim() === "") {
             <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Alert  severity="error" sx={{ mb: 2 }}>
@@ -90,7 +83,18 @@ const ClientData = () => {
         return true; // Valid input
     };
 
-    const isConnected = internet_connected === "Yes";
+
+    const [internet_connected, setInternetConnected] = useState("");
+    let isConnected = internet_connected === "Yes";
+
+    const [provider, setProvider] = useState("");
+    const [internet_price, setInternetPrice] = useState("");
+    const [type_of_connection, setTypeOfConnection] = useState(""); 
+    const [extra_net_info, setExtraNetInfo] = useState("");
+
+    const [product, setProduct] = useState("");
+    const [deal_status, setDealStatus] = useState("");
+
 
     const handleProviderChange = (event) => {
         const value = event.target.value;
@@ -339,7 +343,8 @@ const ClientData = () => {
                         <RadioGroup
                         value={internet_connected}
                         validateInput={validateInput(internet_connected)}
-                        onChange={handleProviderChange}
+                        onChange={(e) => {
+                            setInternetConnected(e.target.value); }}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2
@@ -349,6 +354,7 @@ const ClientData = () => {
                         </RadioGroup>
                     </FormControl>
 
+            <Collapse in={isConnected}>
                     <Paper id ="net-section-two" sx={{
                         border: 1,
                         borderRadius: 1,
@@ -508,6 +514,7 @@ const ClientData = () => {
                     </FormControl>
                     </Stack>
                     </Paper>
+                    </Collapse>
              </Stack>
             </Paper>
              <Button sx={{ 
