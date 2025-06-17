@@ -47,16 +47,16 @@ const Home = () => {
         <Stack  direction="row" spacing={2} sx={{ ml: 5,}}>
                <Item> 
                 <CustomCard 
-                title={<Typography variant="h6">Client Details List</Typography>} 
-                message={"View and manage client details."}
+                title='Client Details List'
+                message="View and manage client details."
                 icon={<GroupRoundedIcon sx={{ color: 'primary.main' }} />} 
                 onClick={() => handleClick('/clients')} />
                 
                 </Item>
             <Item> 
                 <CustomCard 
-                title={<Typography variant="h6">Sales Location List</Typography>} 
-                message={"View and manage sales locations."}
+                title='Sales Location List' 
+                message="View and manage sales locations."
                 icon={<PinDropRoundedIcon sx={{ color: 'primary.main' }} />} 
                 onClick={() => handleClick('/locations')} />
                 </Item>
@@ -65,8 +65,8 @@ const Home = () => {
            <Item> 
 
             <CustomCard 
-            title={<Typography variant="h6">Client Details Form</Typography>} 
-            message={"Fill out the form to add or edit client details."}
+            title='Client Details Form'
+            message="Fill out the form to add or edit client details."
             icon={<NotesRoundedIcon sx={{ color: 'primary.main' }} />} 
             onClick={() => handleClick('/clientform')} />
             </Item>

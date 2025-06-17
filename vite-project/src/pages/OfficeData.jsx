@@ -13,10 +13,17 @@ import Radio from "@mui/material/Radio";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import CustomDialog from "../components/CustomDialog";
 import Snackbar from "@mui/material/Snackbar";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 
 const OfficeData = () => {
+
+    let navigate = useNavigate()
+
+    const [dialogOpen, setDialogOpen] = useState(false)
 
     const [value, setValue] = useState('1');
 
@@ -25,20 +32,27 @@ const OfficeData = () => {
     }
 
     
+
+    
     // inputs on office
     const [office_name, setOfficeName] = useState('');
-    const [office_floor, setOfficeFloor] = useState('');
-    const [number_of_offices, setNumberOfOffices] = useState('');
+    const [office_floor, setOfficeFloor] = useState(0);
+    const [number_of_offices, setNumberOfOffices] = useState(0);
+
+     const [step1Complete, setStep1Complete] = useState(false)
+
+    useEffect(() => {
+        setStep1Complete(office_name ==!'' || office_floor ==! 0 || number_of_offices ==! 0)
+
+  }, [office_name, office_floor, number_of_offices]);
+
 
     // handle navigation to next tab
     const handleNext = () => {
         if(!office_name || !office_floor || !number_of_offices){
-
-            
-
+            setDialogOpen(true)
         } else {
-
-            value === '1' ? setValue('2') : setValue('1');
+           value === '1' ? setValue('2') : setValue('1');
         }
 
     }
@@ -57,12 +71,23 @@ const OfficeData = () => {
     // handle Submit function
 
     const handleSubmit = () => {
-
+        // validate whether all inputs are filled
+        if(!building_name || !is_fibre_setup || !more_offices || !ease_of_access || !more_info_access){
+            setDialogOpen(true)
+        } else {
+            navigate('/')
+        }
     }
 
 
     return (
         <>
+        <CustomDialog
+            open={dialogOpen}
+            title='Error'
+            content='Fill in the fields before proceeding'
+            onClose={() => setDialogOpen(false)}
+            />
           <Box component="form"
           onSubmit={handleSubmit}
           autoComplete="off">
@@ -75,7 +100,7 @@ const OfficeData = () => {
         }}
         value={value} onChange={handleChange} aria-label=" Sales Locations ">
             <Tab value="1" label="Office Details" />
-            <Tab value="2" label="Building Information" />
+            <Tab value="2" label="Building Information" disabled={!step1Complete} />
             </Tabs>
            
             <Collapse in={value === '1'} timeout="auto" unmountOnExit>
@@ -92,6 +117,7 @@ const OfficeData = () => {
                  <Stack sx={{width: '100%'}} spacing={2} direction="column">
                 <TextField 
                 label="Office Name"
+                error={office_name === '' ? 'Empty Field' : '' }
                 value={office_name}
                 onChange={(e) => setOfficeName(e.target.value)}
                 variant="outlined"
