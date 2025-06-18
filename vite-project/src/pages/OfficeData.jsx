@@ -14,24 +14,27 @@ import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import CustomDialog from "../components/CustomDialog";
-import Snackbar from "@mui/material/Snackbar";
+import Backdrop from '@mui/material/Backdrop';
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import { sendData} from "../services/officeService";
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 const OfficeData = () => {
 
+    // useNavigate hook to navigate to different pages
     let navigate = useNavigate()
-
+    //opens a dialog when the user tries to navigate to the next tab without filling in the inputs
     const [dialogOpen, setDialogOpen] = useState(false)
 
+    //handles open and close of pages for Collapse Component
     const [value, setValue] = useState('1');
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     }
 
-    
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     
     // inputs on office
@@ -39,10 +42,10 @@ const OfficeData = () => {
     const [office_floor, setOfficeFloor] = useState(0);
     const [number_of_offices, setNumberOfOffices] = useState(0);
 
+    // disables and enables the next tab based on whether the inputs are filled
      const [step1Complete, setStep1Complete] = useState(false)
-
     useEffect(() => {
-        setStep1Complete(office_name ==!'' || office_floor ==! 0 || number_of_offices ==! 0)
+        setStep1Complete(office_name !== '' || office_floor !== 0 || number_of_offices !== 0)
 
   }, [office_name, office_floor, number_of_offices]);
 
@@ -59,33 +62,69 @@ const OfficeData = () => {
 
 
     // inputs on building
-     const [is_fibre_setup, setIsFibreSetup] = useState('');
+    const [is_fibre_setup, setIsFibreSetup] = useState('');
     const [building_name, setBuildingName] = useState('');
     const [more_offices, setMoreOffices] = useState('');
     const [ease_of_access, setEaseOfAccess] = useState('');
     const [more_info_access, setMoreInfoAccess] = useState('');
 
-    // handle validaito
-    
+
+    const officeDict = [ {
+        "office_name": office_name,
+        "office_floor": office_floor,
+        "number_of_offices": number_of_offices,
+        "is_fibre_setup": is_fibre_setup,
+        "building_name": building_name,
+        "more_offices": more_offices,
+        "ease_of_access": ease_of_access,
+        "more_info_access": more_info_access
+    }
+    ]
+
 
     // handle Submit function
-
-    const handleSubmit = () => {
-        // validate whether all inputs are filled
+    const handleSubmit = async (e) => {
+        e.preventDefault()
         if(!building_name || !is_fibre_setup || !more_offices || !ease_of_access || !more_info_access){
             setDialogOpen(true)
         } else {
-            navigate('/')
+            try {
+                console.log(officeDict);
+                setIsSubmitting(true);
+                const success = await sendData(officeDict);
+                if (success) {
+                    console.log("Data submitted successfully");
+
+                // set fields to empty after submission
+                setOfficeName('');
+                setOfficeFloor(0);
+                setNumberOfOffices(0);
+                setIsFibreSetup('');
+                setBuildingName('');
+                setMoreOffices('');
+                setEaseOfAccess('');
+                setMoreInfoAccess('');
+                // navigate to the home page after successful submission
+                navigate('/');
+                } else {
+                    console.error("Failed to submit data");
+                    setDialogOpen(true); // Show dialog on failure
+                }
+            } catch (error) {
+                console.error("Error submitting data:", error);
+                setDialogOpen(true); // Show dialog on error
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     }
-
 
     return (
         <>
         <CustomDialog
             open={dialogOpen}
             title='Error'
-            content='Fill in the fields before proceeding'
+            content='There was an error in submitting the form. Check if fields were empty or try again later'
             onClose={() => setDialogOpen(false)}
             />
           <Box component="form"
@@ -117,7 +156,7 @@ const OfficeData = () => {
                  <Stack sx={{width: '100%'}} spacing={2} direction="column">
                 <TextField 
                 label="Office Name"
-                error={office_name === '' ? 'Empty Field' : '' }
+                name="office_name"
                 value={office_name}
                 onChange={(e) => setOfficeName(e.target.value)}
                 variant="outlined"
@@ -128,6 +167,7 @@ const OfficeData = () => {
                 <TextField 
                 type="number"
                 label="Office Floor"
+                name="office_floor"
                 value={office_floor}
                 onChange={(e) => setOfficeFloor(e.target.value)}
                 variant="outlined"
@@ -138,6 +178,7 @@ const OfficeData = () => {
                 <TextField 
                 label="Number of offices"
                 value={number_of_offices}
+                name="number_of_offices"
                 onChange={(e) => setNumberOfOffices(e.target.value)}
                 variant="outlined"
                 type="number"
@@ -169,6 +210,7 @@ const OfficeData = () => {
                  <Stack sx={{width: '100%'}} spacing={2} direction="column">
                 <TextField 
                 label="Building Name"
+                name="building_name"
                 value={building_name}
                 onChange={(e) => setBuildingName(e.target.value)}
                 variant="outlined"
@@ -185,6 +227,7 @@ const OfficeData = () => {
                     <FormLabel> Is Fibre Set Up? </FormLabel>
                     <RadioGroup 
                     column
+                    name="is_fibre_setup"
                     value={is_fibre_setup}
                     onChange={(e) => setIsFibreSetup(e.target.value)}
                     sx={{ 
@@ -200,10 +243,11 @@ const OfficeData = () => {
                 <TextField 
                 label="More information on offices i.e floor and name "
                 value={more_offices}
+                name="more_offices"
                 multiline
                 rows={4}
                 onChange={(e) => setMoreOffices(e.target.value)}
-                variant="outlined"_
+                variant="outlined"
                 required
                 sx={{ width: '100%', mt: 2 }}/>
                 <Box sx={{
@@ -217,6 +261,7 @@ const OfficeData = () => {
                     <FormLabel> Ease of Access </FormLabel>
                     <RadioGroup
                     column
+                    name="ease_of_access"
                     value={ease_of_access}
                     onChange={(e) => setEaseOfAccess(e.target.value)}
                     sx={{ 
@@ -238,6 +283,7 @@ const OfficeData = () => {
                     value={more_info_access}
                     onChange={(e) => setMoreInfoAccess(e.target.value)}
                     variant="outlined"
+                    name="more_info_access"
                     required
                     multiline
                     rows={4}
@@ -251,13 +297,21 @@ const OfficeData = () => {
                     mt: 2 }}>
                     Back
                 </Button>
-                <Button onClick={handleSubmit} color="primary" variant="contained" sx={{ 
+                <Button type="submit" color="primary" variant="contained" sx={{ 
                     width: '50%',
                     margin: '0 auto',
                     display: 'block',
                     mt: 2 }}>
-                    Submit
-                </Button>
+                        Submit
+                        </Button>
+                    <Backdrop
+                        sx={{ color: 'grey.500', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                        open={isSubmitting}
+                        onClick={() => setIsSubmitting(false)}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                
                 </Stack>
                 </Paper>
             </Collapse>
