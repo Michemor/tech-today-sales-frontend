@@ -69,7 +69,7 @@ const OfficeData = () => {
     const [more_info_access, setMoreInfoAccess] = useState('');
 
 
-    const officeDict = [ {
+    const officeDict =  {
         "office_name": office_name,
         "office_floor": office_floor,
         "number_of_offices": number_of_offices,
@@ -79,7 +79,7 @@ const OfficeData = () => {
         "ease_of_access": ease_of_access,
         "more_info_access": more_info_access
     }
-    ]
+    
 
 
     // handle Submit function
