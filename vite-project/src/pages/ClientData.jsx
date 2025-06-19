@@ -1,8 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import { useState } from "react";
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import Tab from "@mui/material/Tab";
 import Tabs from '@mui/material/Tabs';
 import Collapse from "@mui/material/Collapse";
@@ -18,129 +16,250 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
+import { sendClientData } from "../services/clientServices";
+import CustomDialog from "../components/CustomDialog";
+import { useNavigate } from "react-router";
+import Snackbar from "@mui/material/Snackbar";
+
 
 const ClientData = () => {
-  const [value, setValue] = useState("1");
+    const navigate = useNavigate();
+    const [value, setValue] = useState("1");
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Function to handle next button click
+       const [clientDetails, setClientDetails] = useState({
+      first_name: "",
+      last_name: "",
+      email: "",
+      contact_number: "",
+      job_title: "",
+    });
+
+      const handleClientDetailsChange = useCallback((e) => {
+        const { name, value } = e.target;
+        setClientDetails((prevDetails) => ({
+        ...prevDetails,
+        [name]: value,
+        }));
+    }, []);
+
+    const [step1Complete, setStep1Complete] = useState(false);
+    useEffect(() => {
+        setStep1Complete(clientDetails.first_name !== '' && clientDetails.last_name !== '' && clientDetails.email !== '' && clientDetails.contact_number !== '' && clientDetails.job_title !== '');
+    }, [clientDetails]);
+
+    // State to hold meeting details
+    const getDateToday = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); 
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+
+    }
+
+     const [meetingDetails, setMeetingDetails] = useState({
+      meeting_date: getDateToday(),
+      meeting_location: "",
+      meeting_remarks: "",
+      meeting_status: "",
+    });
+
+    const handleMeetingDetailChange = (e) => {
+      const { name, value } = e.target;
+      setMeetingDetails((prevDetails) => ({
+        ...prevDetails,
+        [name]: value,
+      }));
+    };
+
+    const [step2Complete, setStep2Complete] = useState(false);
+    useEffect(() => {
+        setStep2Complete(meetingDetails.meeting_date !== '' && meetingDetails.meeting_location !== '' && meetingDetails.meeting_remarks !== '' && meetingDetails.meeting_status !== '');
+    }, [meetingDetails]);
+
+    const [officeDetails, setOfficeDetails] = useState({
+        office_name: "",
+        number_staff: "",
+        industry_category: "",
+    });
+
+   const handleOfficeDetailsChange = useCallback((e) => {
+        const { name, value } = e.target;
+        setOfficeDetails((prevDetails) => ({
+        ...prevDetails,
+        [name]: value,
+        }));
+    }, []);
+
+    const [step3Complete, setStep3Complete] = useState(false);
+    useEffect(() => {
+        setStep3Complete(officeDetails.office_name !== '' && officeDetails.number_staff !== '' && officeDetails.industry_category !== '');
+    }, [officeDetails]);
+
+
+    const [internetDetails, setInternetDetails] = useState({
+        internet_connected: "No",
+        provider: "",
+        internet_price: 0,
+        type_of_connection: "",
+        extra_net_info: "",
+        product: "",
+        deal_status: ""
+    });
+
+    const handleInternetDetailsChange = (e) => {
+        const { name, value } = e.target;
+        setInternetDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+    };
+
+    const [internetConnected, setInternetConnected] = useState("No");
+
+    // Function to handle provider change based on internet connection status
+    const handleInternetConnectedChange = (event) => {
+        const value = event.target.value;
+        setInternetConnected(value);
+        if (value === "No") {
+            setInternetDetails((prevDetails) => ({
+                ...prevDetails,
+                provider: "",
+                internet_price: 0,
+                type_of_connection: "",
+                extra_net_info: "",
+                product: "",
+                deal_status: ""
+            }));
+    }
+}
+
+   
+
     const handleNext = () => {
+    if (!clientDetails.first_name || !clientDetails.last_name || !clientDetails.email || !clientDetails.contact_number || !clientDetails.job_title ||
+        !meetingDetails.meeting_date || !meetingDetails.meeting_location || !meetingDetails.meeting_remarks || !meetingDetails.meeting_status ||
+        !officeDetails.office_name || !officeDetails.number_staff || !officeDetails.industry_category) {
+        setDialogOpen(true);
+        } else {
         if (value === "1") { 
             setValue("2");
-        }
-        else if (value === "2") {
+        } else if (value === "2") {
             setValue("3");
         } else if (value === "3") {
             setValue("4");
         }
-    };
-
-
-    // State to hold client details
-    const [first_name, setFirstName] = useState("");
-    const [last_name, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [contact_number, setContactNumber] = useState("");
-    const [job_title, setJobTitle] = useState("");
-
-    // State to hold meeting details
-    const getDateToday = () => {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); 
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-
-    }
-
-    const [meeting_date, setMeetingDate] = useState(getDateToday());
-    const [meeting_location, setMeetingLocation] = useState("");
-    const [meeting_remarks, setMeetingRemarks] = useState("");
-    const [meeting_status, setMeetingStatus] = useState("");
-
-    // set office details
-    const [office_name, setOfficeName] = useState("");
-    const [number_staff, setNumberStaff] = useState("");
-    const [industry_category, setIndustryCategory] = useState("");
-
-
-    // set internet status information
-    
-    
-    // validate input fields
-    const validateInput = (input) => {
-        if (!input || input.trim() === "") {
-            <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-            <Alert  severity="error" sx={{ mb: 2 }}>
-                Please fill out all required fields.
-            </Alert>
-            </Backdrop>
-        }
-        return true; // Valid input
-    };
-
-
-    const [internet_connected, setInternetConnected] = useState("No");
-    let isConnected = internet_connected === "Yes";
-
-    const [provider, setProvider] = useState("");
-    const [internet_price, setInternetPrice] = useState("");
-    const [type_of_connection, setTypeOfConnection] = useState(""); 
-    const [extra_net_info, setExtraNetInfo] = useState("");
-
-    const [product, setProduct] = useState("");
-    const [deal_status, setDealStatus] = useState("");
-
-    // Function to handle provider change based on internet connection status
-
-    const handleInternetConnectedChange = (event) => {
-        const value = event.target.value;
-        setInternetConnected(value);
-        if (value === "No") { 
-        setProvider("");
-        setInternetPrice("");
-        setTypeOfConnection("");
-        setExtraNetInfo("");
-        setProduct("");
-        setDealStatus("");
     }
 }
 
+   
+
 
     // Function to handle form submission
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         // Here you can handle the form submission, e.g., send data to an API
-        console.log({
-            first_name,
-            last_name,
-            email,
-            contact_number,
-            job_title,
-            meeting_date,
-            meeting_location,
-            meeting_remarks,
-            meeting_status,
-            office_name,
-            number_staff,
-            industry_category,
-            internet_connected,
-            provider,
-            internet_price,
-            type_of_connection,
-            extra_net_info,
-            product,
-            deal_status
-        });
+        if(!clientDetails.first_name || !clientDetails.last_name || !clientDetails.email || !clientDetails.contact_number || !clientDetails.job_title ||
+            !meetingDetails.meeting_date || !meetingDetails.meeting_location || !meetingDetails.meeting_remarks || !meetingDetails.meeting_status ||
+            !officeDetails.office_name || !officeDetails.number_staff || !officeDetails.industry_category) {
+            setDialogOpen(true);
+            return;
+        } else {
+            try {
+                setIsSubmitting(true);
+
+            // set information in dictionary
+            const salesDetails = {
+                "client_name": `${clientDetails.first_name} ${clientDetails.last_name}`,
+                "client_email": clientDetails.email,
+                "client_contact": clientDetails.contact_number,
+                "job_title": clientDetails.job_title,
+                "date": meetingDetails.meeting_date,
+                "location": meetingDetails.meeting_location,
+                "remarks": meetingDetails.meeting_remarks,
+                "status": meetingDetails.meeting_status,
+                "office_name": officeDetails.office_name,
+                "staff_number": officeDetails.number_staff,
+                "industry_category": officeDetails.industry_category,
+                "isp_connected": internetConnected,
+                "isp_name": internetDetails.provider,
+                "net_price": internetDetails.internet_price,
+                "net_connection_type": internetDetails.type_of_connection,
+                "deal_information": internetDetails.extra_net_info,
+                "product": internetDetails.product,
+                "deal_status": internetDetails.deal_status
+        }
+                const success = await sendClientData(salesDetails);
+                if (success) {
+                    // Handle successful submission, e.g., show a success message or redirect
+                    console.log("Data submitted successfully");
+
+                    setClientDetails({
+                        first_name: "",
+                        last_name: "",
+                        email: "",
+                        contact_number: "",
+                        job_title: ""
+                    });
+                    setMeetingDetails({
+                        meeting_date: getDateToday(),
+                        meeting_location: "",
+                        meeting_remarks: "",
+                        meeting_status: ""
+                    });
+                    setOfficeDetails({
+                        office_name: "",
+                        number_staff: 0,
+                        industry_category: ""
+                    });
+                    setInternetDetails({
+                        provider: "",
+                        internet_price: 0,
+                        type_of_connection: "",
+                        extra_net_info: "",
+                        product: "",
+                        deal_status: ""
+                    });
+                    setValue("1");
+
+                    navigate('/')// Reset to the first tab
+                } else {
+                    <Snackbar
+                        open={dialogOpen}
+                        autoHideDuration={6000}
+                        onClose={() => setDialogOpen(false)}
+                        message="Error submitting data"
+                    />
+                }
+            } catch (error) {
+                console.error("Error submitting data:", error);
+                setDialogOpen(true);
+            } finally { 
+                setIsSubmitting(false);
+            }
+
+        }
+        
     };
 
     
     return (
         <>
-        <Box>
+        <CustomDialog
+                    open={dialogOpen}
+                    title='Error'
+                    content='There was an error in submitting the form. Check if fields were empty or try again later'
+                    onClose={() => setDialogOpen(false)}
+                    />
+                  <Box component="form"
+                  onSubmit={handleSubmit}
+                  autoComplete="off">
             <Tabs value={value} onChange={handleChange} aria-label=" Client Data Tab"
             sx={{
                 borderBottom: 1,
@@ -149,10 +268,10 @@ const ClientData = () => {
                 justifyContent: 'center',
                 marginTop: 2,
             }}>
-                <Tab label="Client Details" value="1" />
-                <Tab label="Meeting Details" value="2" />
-                <Tab label="Office Details" value="3" />
-                <Tab label="Internet Information" value="4" />
+                <Tab label="Client Details" value="1"  />
+                <Tab label="Meeting Details" value="2" disabled={!step1Complete} />
+                <Tab label="Office Details" value="3" disabled={!step2Complete} />
+                <Tab label="Internet Information" value="4" disabled={!step3Complete} />
             </Tabs>
             <Collapse in={value === "1"}>
             <Paper sx={{ 
@@ -168,17 +287,17 @@ const ClientData = () => {
             <Stack spacing={2} direction="row" sx={{ mb: 2 }}>
             <TextField
                 label="First Name"
-                value={first_name}
-                onChange={(e) => setFirstName(e.target.value)}
+                name="first_name"
+                value={clientDetails.first_name}
+                onChange={handleClientDetailsChange}
                 variant="outlined"
-                validateinput={validateInput(first_name)}
                 fullWidth
                 sx={{ mt: 2 }}/>
             <TextField
                 label="Last Name"
-                value={last_name}
-                onChange={(e) => setLastName(e.target.value)}
-                validateinput={validateInput(last_name)}
+                name="last_name"
+                value={clientDetails.last_name}
+                onChange={handleClientDetailsChange}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
@@ -186,27 +305,33 @@ const ClientData = () => {
             <TextField
                 type="email"
                 label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                validateinput={validateInput(email)}
-                helperText="Please enter a valid email address"
+                error={clientDetails.email !== "" && !clientDetails.email.includes('@')}
+                helperText={
+                clientDetails.email !== "" && !clientDetails.email.includes('@') 
+                        ? "Please enter a valid email" 
+                        : ""
+                }
+                name="email"
+                value={clientDetails.email}
+                onChange={handleClientDetailsChange}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
             <TextField
                 label="Contact Number"
+                name="contact_number"
+                error={clientDetails.contact_number !== "" && !/^\d+$/.test(clientDetails.contact_number)}
                 type="tel"
-                value={contact_number}
-                onChange={(e) => setContactNumber(e.target.value)}
-                validateinput={validateInput(contact_number)}
+                value={clientDetails.contact_number}
+                onChange={handleClientDetailsChange}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
             <TextField
                 label="Job Title"
-                value={job_title}
-                validateinput={validateInput(job_title)}
-                onChange={(e) => setJobTitle(e.target.value)}
+                name="job_title"
+                value={clientDetails.job_title}
+                onChange={handleClientDetailsChange}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
@@ -230,34 +355,34 @@ const ClientData = () => {
             <TextField
                 required
                 type="date"
-                value={meeting_date}
-                validateinput={validateInput(meeting_date)}
-                onChange={(e) => setMeetingDate(e.target.value)}
+                name="meeting_date"
+                value={meetingDetails.meeting_date}
+                onChange={handleMeetingDetailChange}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
             <TextField
                 label="Meeting Location"
-                value={meeting_location}
-                validateinput={validateInput(meeting_location)}
-                onChange={(e) => setMeetingLocation(e.target.value)}
+                name="meeting_location"
+                value={meetingDetails.meeting_location}
+                onChange={handleMeetingDetailChange}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
             <TextField
                 type="meeting_remarks"
                 label="Meeting Remarks"
-                value={meeting_remarks}
-                validateinput={validateInput(meeting_remarks)}
-                onChange={(e) => setMeetingRemarks(e.target.value)}
+                name="meeting_remarks"
+                value={meetingDetails.meeting_remarks}
+                onChange={handleMeetingDetailChange}
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
            <Autocomplete
                 options={['Scheduled', 'Completed', 'Cancelled']}
-                value={meeting_status}
-                onChange={(event, newValue) => setMeetingStatus(newValue)}
-                validateinput={validateInput(meeting_status)}
+                name="meeting_status"
+                value={meetingDetails.meeting_status}
+                onChange={handleMeetingDetailChange}
                 renderInput={(params) => <TextField {...params} label="Meeting Status" />}
                 fullWidth
                 sx={{ mt: 2 }}/>
@@ -280,16 +405,19 @@ const ClientData = () => {
             <Typography variant="h6" > Office Details Section</Typography>
             <TextField
                 label="Office Name"
-                value={office_name}
-                onChange={(e) => setOfficeName(e.target.value)}
+                value={officeDetails.office_name}
+                onChange={handleOfficeDetailsChange}
+                name="office_name"
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
                 <TextField
                 label="Number of Staff"
                 type="number"
-                value={number_staff}
-                onChange={(e) => setNumberStaff(e.target.value)}
+                value={officeDetails.number_staff}
+                onChange={handleOfficeDetailsChange}
+                error={officeDetails.number_staff !== "" || !/^\d+$/.test(officeDetails.number_staff) || officeDetails.number_staff <= 0}
+                name="number_staff"
                 variant="outlined"
                 fullWidth
                 sx={{ mt: 2 }}/>
@@ -302,8 +430,8 @@ const ClientData = () => {
                     <FormLabel id ="Industry Category" sx={{ mt: 2 }}> Industry Category </FormLabel>
                    <RadioGroup
                        column
-                       value={industry_category}
-                       onChange={(e) => setIndustryCategory(e.target.value)}
+                       value={officeDetails.industry_category}
+                       onChange={handleOfficeDetailsChange}
                        sx={{ 
                         color: 'secondary.dark',
                         mt: 2 }}>
@@ -342,8 +470,7 @@ const ClientData = () => {
                         mt: 2 }}> 
                         <FormLabel id="internet-connected"> Does the client have an existing internet connection?  </FormLabel>
                         <RadioGroup
-                        value={internet_connected}
-                        validateInput={validateInput(internet_connected)}
+                        value={internetConnected}
                         onChange={handleInternetConnectedChange}
                         sx={{
                             color: 'secondary.dark',
@@ -354,7 +481,7 @@ const ClientData = () => {
                         </RadioGroup>
                     </FormControl>
 
-            <Collapse in={isConnected}>
+            <Collapse in={internetDetails.internet_connected === "Yes"}>
                     <Paper id ="net-section-two" sx={{
                         border: 1,
                         borderRadius: 1,
@@ -372,9 +499,9 @@ const ClientData = () => {
                         mt: 2 }}>
                     <FormLabel id="provider-label"> Internet Service Provider </FormLabel>
                         <RadioGroup
-                        value={provider}
-                        disabled={!isConnected}
-                        onChange={(e) => setProvider(e.target.value)}
+                        value={internetDetails.provider}
+                        disabled={internetDetails.internet_connected === "No" }
+                        onChange={handleInternetDetailsChange}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2
@@ -393,8 +520,8 @@ const ClientData = () => {
                         sx={{ 
                             width: '50%',
                             mt: 2 }}
-                            value={ provider === "Other" ? provider : ""}
-                            onChange={(e) => setProvider(e.target.value)}
+                            value={internetDetails.provider === "Other" ? internetDetails.provider : ""}
+                            onChange={(e) => handleInternetDetailsChange(e)}
                         />
                 </FormControl>
            <FormControl sx={{
@@ -405,8 +532,8 @@ const ClientData = () => {
                         mt: 2 }}>
                     <FormLabel id="internet-price"> Price/Rate per Month </FormLabel>
                         <RadioGroup
-                        value={internet_price}
-                        onChange={(e) => setInternetPrice(e.target.value)}
+                        value={internetDetails.internet_price}
+                        onChange={handleInternetDetailsChange}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2
@@ -421,8 +548,8 @@ const ClientData = () => {
                         sx={{ 
                             width: '50%',
                             mt: 2 }}
-                            value={ internet_price === "Other" ? internet_price : ""}
-                            onChange={(e) => setInternetPrice(e.target.value)}
+                            value={ internetDetails.internet_price === "Other" ? internetDetails.internet_price : ""}
+                            onChange={handleInternetDetailsChange}
                         />
                 </FormControl>
                 <FormControl sx={{
@@ -433,8 +560,8 @@ const ClientData = () => {
                         mt: 2 }}>
                     <FormLabel id="type-of-connection"> Type of Connection </FormLabel>
                         <RadioGroup
-                        value={type_of_connection}
-                        onChange={(e) => setTypeOfConnection(e.target.value)}
+                        value={internetDetails.type_of_connection}
+                        onChange={handleInternetDetailsChange}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2
@@ -452,8 +579,8 @@ const ClientData = () => {
                         mt: 2 }}>
                     <FormLabel id="product"> Product / Service </FormLabel>
                     <RadioGroup
-                        value={product}
-                        onChange={(e) => setProduct(e.target.value)}
+                        value={internetDetails.product}
+                        onChange={handleInternetDetailsChange}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2
@@ -468,15 +595,15 @@ const ClientData = () => {
                         sx={{ 
                             width: '50%',
                             mt: 2 }}
-                            value={ product === "Other" ? product : ""}
-                            onChange={(e) => setProduct(e.target.value)}
+                            value={internetDetails.product === "Other" ? internetDetails.product : ""}
+                            onChange={(e) => handleInternetDetailsChange(e)}
                         />
                        </FormControl>
 
                        <TextField
                        label="Extra Net Information"
-                          value={extra_net_info}
-                            onChange={(e) => setExtraNetInfo(e.target.value)}
+                          value={internetDetails.extra_net_info}
+                            onChange={handleInternetDetailsChange}
                           variant="outlined"
                             fullWidth
                             multiline
@@ -490,8 +617,8 @@ const ClientData = () => {
                         mt: 2 }}>
                             <FormLabel id="deal-status"> Deal Status </FormLabel>
                         <RadioGroup
-                        value={deal_status}
-                        onChange={(e) => setDealStatus(e.target.value)}
+                        value={internetDetails.deal_status}
+                        onChange={handleInternetDetailsChange}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2
@@ -508,8 +635,8 @@ const ClientData = () => {
                         sx={{ 
                             width: '50%',
                             mt: 2 }}
-                            value={ deal_status === "Other" ? deal_status : ""}
-                            onChange={(e) => setDealStatus(e.target.value)}
+                            value={internetDetails.deal_status === "Other" ? internetDetails.deal_status : ""}
+                            onChange={handleInternetDetailsChange}
                         />
                     </FormControl>
                     </Stack>
@@ -522,10 +649,16 @@ const ClientData = () => {
                 margin: '0 auto',
                 display: 'block',
                 }}
-                variant="contained" color="primary" onClick = {() => handleSubmit()} > Submit </Button>
+                variant="contained" color="primary"> Submit </Button>
+
+                <Backdrop open={isSubmitting} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+                    <Alert severity="info" sx={{ mb: 2 }}>
+                    Submitting data, please wait...
+                    </Alert>
+                </Backdrop>
             </Collapse>
         </Box>
         </>
-    )}
+    )};
 
 export default ClientData;
