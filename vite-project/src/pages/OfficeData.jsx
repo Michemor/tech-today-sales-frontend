@@ -104,6 +104,7 @@ const OfficeData = () => {
                 setMoreOffices('');
                 setEaseOfAccess('');
                 setMoreInfoAccess('');
+                setValue('1'); 
                 // navigate to the home page after successful submission
                 navigate('/');
                 } else {

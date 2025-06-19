@@ -49,9 +49,10 @@ const ClientData = () => {
     }, []);
 
     const [step1Complete, setStep1Complete] = useState(false);
-    useEffect(() => {
+    /** useEffect(() => {
         setStep1Complete(clientDetails.first_name !== '' && clientDetails.last_name !== '' && clientDetails.email !== '' && clientDetails.contact_number !== '' && clientDetails.job_title !== '');
     }, [clientDetails]);
+    */
 
     // State to hold meeting details
     const getDateToday = () => {
@@ -85,7 +86,7 @@ const ClientData = () => {
 
     const [officeDetails, setOfficeDetails] = useState({
         office_name: "",
-        number_staff: "",
+        number_staff: 0,
         industry_category: "",
     });
 
@@ -98,13 +99,15 @@ const ClientData = () => {
     }, []);
 
     const [step3Complete, setStep3Complete] = useState(false);
-    useEffect(() => {
+    /** useEffect(() => {
         setStep3Complete(officeDetails.office_name !== '' && officeDetails.number_staff !== '' && officeDetails.industry_category !== '');
     }, [officeDetails]);
+    */
 
+// show internet details section based in internet connection status
+    const [internetConnected, setInternetConnected] = useState("");
 
     const [internetDetails, setInternetDetails] = useState({
-        internet_connected: "No",
         provider: "",
         internet_price: 0,
         type_of_connection: "",
@@ -112,6 +115,24 @@ const ClientData = () => {
         product: "",
         deal_status: ""
     });
+    useEffect(() => {
+        if (internetConnected === "No") {
+            setInternetConnected("No");
+            setInternetDetails({
+                provider: "",
+                internet_price: 0,
+                type_of_connection: "",
+                extra_net_info: "",
+                product: "",
+                deal_status: ""
+            });
+        } else {
+            setInternetDetails((prevDetails) => ({
+                ...prevDetails,
+                internet_connected: "Yes",
+            }));
+        }
+    }, [internetConnected]);
 
     const handleInternetDetailsChange = (e) => {
         const { name, value } = e.target;
@@ -121,10 +142,9 @@ const ClientData = () => {
         }));
     };
 
-    const [internetConnected, setInternetConnected] = useState("No");
-
+    
     // Function to handle provider change based on internet connection status
-    const handleInternetConnectedChange = (event) => {
+     /** const handleInternetConnectedChange = (event) => {
         const value = event.target.value;
         setInternetConnected(value);
         if (value === "No") {
@@ -140,12 +160,10 @@ const ClientData = () => {
     }
 }
 
-   
+   */
 
     const handleNext = () => {
-    if (!clientDetails.first_name || !clientDetails.last_name || !clientDetails.email || !clientDetails.contact_number || !clientDetails.job_title ||
-        !meetingDetails.meeting_date || !meetingDetails.meeting_location || !meetingDetails.meeting_remarks || !meetingDetails.meeting_status ||
-        !officeDetails.office_name || !officeDetails.number_staff || !officeDetails.industry_category) {
+    if (!clientDetails.first_name || !clientDetails.last_name || !clientDetails.email || !clientDetails.contact_number || !clientDetails.job_title) {
         setDialogOpen(true);
         } else {
         if (value === "1") { 
@@ -187,7 +205,7 @@ const ClientData = () => {
                 "office_name": officeDetails.office_name,
                 "staff_number": officeDetails.number_staff,
                 "industry_category": officeDetails.industry_category,
-                "isp_connected": internetConnected,
+                "isp_connected": internetDetails.internet_connected,
                 "isp_name": internetDetails.provider,
                 "net_price": internetDetails.internet_price,
                 "net_connection_type": internetDetails.type_of_connection,
@@ -288,7 +306,7 @@ const ClientData = () => {
             <TextField
                 label="First Name"
                 name="first_name"
-                value={clientDetails.first_name}
+                value={clientDetails.first_name.trim()}
                 onChange={handleClientDetailsChange}
                 variant="outlined"
                 fullWidth
@@ -296,7 +314,7 @@ const ClientData = () => {
             <TextField
                 label="Last Name"
                 name="last_name"
-                value={clientDetails.last_name}
+                value={clientDetails.last_name.trim()}
                 onChange={handleClientDetailsChange}
                 variant="outlined"
                 fullWidth
@@ -470,8 +488,8 @@ const ClientData = () => {
                         mt: 2 }}> 
                         <FormLabel id="internet-connected"> Does the client have an existing internet connection?  </FormLabel>
                         <RadioGroup
-                        value={internetConnected}
-                        onChange={handleInternetConnectedChange}
+                        value={internetDetails.internet_connected}
+                        onChange={handleInternetDetailsChange}
                         sx={{
                             color: 'secondary.dark',
                             mt: 2

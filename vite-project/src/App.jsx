@@ -24,7 +24,6 @@ export default function App() {
 
     return (
         <>
-        <div>
         <Box 
         sx={{ 
           display: 'flex',
@@ -59,7 +58,6 @@ export default function App() {
             <Route path='/clients' element={<ClientList />} />
             <Route path='/locations' element={<Locations />} />
         </Routes>
-        </div>
         </>
     )
 }
