@@ -17,19 +17,31 @@ export const sendClientData = async (clientData) => {
         console.error("No data provided to send.");
         return false;
     }
+    console.log("Sending client data:", clientData);
 
     try{
-
         const response = await axiosInstance.post(`/salesdetails`, clientData);
-        const { success, message } = response.data;
+        return response.data;
 
-        if (success) {
-            console.log("Data sent successfully:", message);
-            return true;
-        }
 
     } catch (error) {
         console.error("Error sending data:", error);
         throw error;
     }
+}
+
+export const getClients = async () => {
+    try {
+        const response = await axiosInstance.get(`/listclients`);
+        const { success, message, data } = response.data;
+
+        if (success) {
+            console.log("Data retrieved successfully:", message, data);
+            return data;
+        }
+    } catch (error) {
+        console.error("Error retrieving data:", error);
+        throw error;
+    }
+    return [];
 }

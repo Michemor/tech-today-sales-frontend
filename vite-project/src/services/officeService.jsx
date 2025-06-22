@@ -35,3 +35,23 @@ export const sendData = async(officeData) => {
     }
      return false;
 }
+
+export const getOffices = async () => {
+    try {
+        const response = await axiosInstance.get(`/listsites`);
+        const { success, message, buildings, offices} = response.data;
+        const data = {
+            buildings: buildings || [],
+            offices: offices || []
+        };
+
+        if (success) {
+            console.log("Data retrieved successfully:", message);
+            return data;
+        }
+    } catch (error) {
+        console.error("Error retrieving data:", error);
+        throw error;
+    }
+    return [];
+}

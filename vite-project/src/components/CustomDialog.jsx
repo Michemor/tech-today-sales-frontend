@@ -6,8 +6,6 @@ import Button from "@mui/material/Button";
 
 const CustomDialog = ({open, onClose, title, content }) => {
 
-    
-
     return (
         <>
        <Dialog
