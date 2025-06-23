@@ -142,6 +142,7 @@ export const ClientData = () => {
       value={value}
       onChange={() => handleNext()}
       sx={{ m: 3 }}
+      centered
       >
       <Tab label="Section 1" value="1"/>
       <Tab label="Section 2" value="2"/>

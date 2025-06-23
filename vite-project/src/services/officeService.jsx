@@ -39,6 +39,7 @@ export const sendData = async(officeData) => {
 export const getOffices = async () => {
     try {
         const response = await axiosInstance.get(`/listsites`);
+        console.log("Response from API:", response.data);
         const { success, message, buildings, offices} = response.data;
         const data = {
             buildings: buildings || [],

@@ -42,10 +42,10 @@ const Locations = () => {
 ];
 
     const officesColumns = [
-        { field: 'id', headerName: 'ID', width: 90 },
-        { field: 'name', headerName: 'Office Name', width: 150 },
-        { field: 'floor', headerName: 'Office Floor', width: 150 },
-        { field: 'more-info', headerName: 'More Data on Office', width: 120 },
+        { field: 'office_id', headerName: 'ID', width: 90 },
+        { field: 'office_name', headerName: 'Office Name', width: 150 },
+        { field: 'office_floor', headerName: 'Office Floor', width: 150 },
+        { field: 'more_data_on_office', headerName: 'More Data on Office', width: 120 },
         { field: 'building-id', headerName: 'Bulding ID', width: 120 },
     ];
 
@@ -54,7 +54,7 @@ const Locations = () => {
         <>
         <Paper sx={{ width: '100%', height: 400, marginTop: 2, padding: 2 }}>
             <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>
-                Locations List </Typography>
+               Buildings List </Typography>
            <DataGrid
                 rows={buildings}
                 columns={buildingsColumns}
@@ -65,7 +65,6 @@ const Locations = () => {
                     },
                 }}
                 pageSizeOptions={[5, 10, 25]}
-                autoHeight
             />
         </Paper>
 
@@ -82,7 +81,6 @@ const Locations = () => {
                     },
                 }}
                 pageSizeOptions={[5, 10, 25]}
-                autoHeight
             />
         </Paper>
         </>

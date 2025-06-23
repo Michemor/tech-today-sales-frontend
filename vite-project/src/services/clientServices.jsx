@@ -32,16 +32,63 @@ export const sendClientData = async (clientData) => {
 
 export const getClients = async () => {
     try {
-        const response = await axiosInstance.get(`/listclients`);
-        const { success, message, data } = response.data;
-
-        if (success) {
-            console.log("Data retrieved successfully:", message, data);
-            return data;
+        const response = await axiosInstance.get(`/clients`);
+        
+        if (response.data.success) {
+            console.log("Data retrieved successfully:", response.data);
+            return response.data;
         }
     } catch (error) {
         console.error("Error retrieving data:", error);
         throw error;
     }
+    return [];
+}
+
+export const getMeetings = async () => {
+    try{
+        const response = await axiosInstance.get(`/meetings`);
+        
+        if (response.data.success) {
+            console.log("Meetings data retrieved successfully:", response.data);
+            return response.data;
+        }
+    } catch (error) {
+        console.error("Error retrieving meetings data:", error);
+        throw error;
+    }
+
+    return [];
+}
+
+export const getOffices = async () => {
+    try {
+        const response = await axiosInstance.get(`/offices`);
+        
+        if (response.data.success) {
+            console.log("Offices data retrieved successfully:", response.data);
+            return response.data;
+        }
+    } catch (error) {
+        console.error("Error retrieving offices data:", error);
+        throw error;
+    }
+
+    return [];
+}
+
+export const getInternet = async () => {
+    try {
+        const response = await axiosInstance.get(`/internet`);
+        
+        if (response.data.success) {
+            console.log("Internet data retrieved successfully:", response.data);
+            return response.data;
+        }
+    } catch (error) {
+        console.error("Error retrieving internet data:", error);
+        throw error;
+    }
+
     return [];
 }
