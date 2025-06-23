@@ -92,3 +92,34 @@ export const getInternet = async () => {
 
     return [];
 }
+
+export const updateMeeting = async (meetingData) => {
+    if (!meetingData || Object.keys(meetingData).length === 0) {
+        console.error("No meeting data provided to update.");
+        return false;
+    }
+
+    try {
+        const response = await axiosInstance.put(`/meetings/${meetingData.meeting_id}`, meetingData);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating meeting data:", error);
+        throw error;
+    }
+}
+
+export const deleteMeeting = async (meetingId) => {
+    if (!meetingId) {
+        console.error("No meeting ID provided to delete.");
+        return false;
+    }
+
+    try {
+        const response = await axiosInstance.delete(`/meetings/${meetingId}`);
+        console.log("Deleting meeting with ID:", meetingId);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting meeting:", error);
+        throw error;
+    }
+}

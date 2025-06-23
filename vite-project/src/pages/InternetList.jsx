@@ -33,7 +33,10 @@ export const InternetList = () => {
 
     return(
         <>
-        <Paper>
+       <Paper sx={{ 
+            m: 2,
+            padding: 2 
+            }}>
             <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>
                 Internet List
             </Typography>

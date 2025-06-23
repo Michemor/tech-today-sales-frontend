@@ -10,9 +10,15 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { useState } from 'react';
 
 
 export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
+  const [currentCategory, setCurrentCategory] = useState(officeDetails.industry || '');
+
+  const handleCategoryChange = (event) => {
+    setCurrentCategory(event.target.value);
+  }
 
     return (
         <>
@@ -62,8 +68,8 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
               <FormLabel id="industry"> Industry Category </FormLabel>
               <RadioGroup
                 name="industry"
-                value={officeDetails.industry}
-                onChange={(e) => setOfficeDetails({...officeDetails, industry: e.target.value})}>
+                value={currentCategory}
+                onChange={(e) => handleCategoryChange(e)}>
                 <FormControlLabel value="NGO" control={<Radio />} label="NGO" />
                 <FormControlLabel value="Manufacturing Industries" control={<Radio />} label="Manufacturing Industries" />
                 <FormControlLabel value="Bank" control={<Radio />} label="Bank" />
@@ -72,6 +78,16 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
                 <FormControlLabel value="Other" control={<Radio />} label="Other" />
             </RadioGroup>
             </FormControl>
+            {currentCategory === 'Other' && (
+              <TextField
+                label="Specify Other Industry"
+                name='other_industry'
+                value={officeDetails.other_industry}
+                onChange={(e) => setOfficeDetails({ ...officeDetails, other_industry: e.target.value })}
+                variant="outlined"
+                fullWidth
+              />
+            )}
             </Box> 
              
             </Stack>

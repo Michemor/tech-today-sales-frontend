@@ -12,9 +12,22 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Autocomplete from '@mui/material/Autocomplete';
 import Collapse from '@mui/material/Collapse';
+import { useState } from 'react';
 
 export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }) => {
+    const [currentSelection, setCurrentSelection] = useState(internetDetails.isp_name || '');
+    const [currentPrice, setCurrentPrice] = useState(internetDetails.net_price || '');
+    const [currentProduct, setCurrentProduct] = useState(internetDetails.product || '');
 
+    const handleChange = (event, newValue) => {
+        setCurrentSelection(newValue)
+        setCurrentPrice(newValue);
+        setCurrentProduct(newValue);
+        setInternetDetails({ ...internetDetails, isp_name: newValue });
+        setInternetDetails({ ...internetDetails, net_price: newValue });
+        setInternetDetails({ ...internetDetails, product: newValue });
+    } 
+    
     return(
         <>
         <Paper 
@@ -67,8 +80,8 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                       <FormLabel id="isp-label"> Internet Service Provider </FormLabel>
                       <RadioGroup                        
                         name="isp_name"
-                        value={internetDetails.isp_name}
-                        onChange={(e) => setInternetDetails({ ...internetDetails, isp_name: e.target.value })}
+                        value={currentSelection}
+                        onChange={(e) => handleChange(e, e.target.value)}
                         sx={{ color: 'text.secondary' }}>
                         <FormControlLabel value="Liquid" control={<Radio />} label="Liquid" />
                         <FormControlLabel value="Safaricom Fibre" control={<Radio />} label="Safaricom Fibre" />
@@ -79,7 +92,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                         <FormControlLabel value="Other" control={<Radio />} label="Other" />
                         </RadioGroup>
                     </FormControl>
-                    { internetDetails.isp_name === 'Other' && (
+                    { currentSelection === 'Other' && (
                     <TextField
                     name="other_isp"
                     value={internetDetails.isp_name}
@@ -101,8 +114,8 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                   <FormControl>
                     <FormLabel id="net-price"> Price/Rate per month </FormLabel>
                     <RadioGroup
-                    value={internetDetails.net_price}
-                    onChange={(e) => setInternetDetails({ ...internetDetails, net_price: e.target.value })}
+                    value={currentPrice}
+                    onChange={(e) => handleChange(e, e.target.value)}
                     name="net_price"
                     sx={{ color: 'text.secondary' }}>
                       <FormControlLabel value="Below 5000" control={<Radio />} label="Below 5000" />
@@ -111,7 +124,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                       <FormControlLabel value="Other" control={<Radio />} label="Other" />  
                       </RadioGroup>
                   </FormControl>
-                  {internetDetails.net_price === 'Other' && (
+                  {currentPrice === 'Other' && (
                      <TextField
                   name='other_price'
                   value={internetDetails.net_price}
@@ -147,8 +160,8 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                       <FormLabel id="product-label"> Product </FormLabel>
                       <RadioGroup
                         name="product"
-                        value={internetDetails.product}
-                        onChange={(e) => setInternetDetails({ ...internetDetails, product: e.target.value })}
+                        value={currentProduct}
+                        onChange={(e) => handleChange(e, e.target.value)}
                         sx={{ color: 'text.secondary' }}>
                         <FormControlLabel value="Internet" control={<Radio />} label="Internet" />
                         <FormControlLabel value="Domain & Hosting" control={<Radio />} label="Domain & Hosting" />
@@ -156,7 +169,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                         <FormControlLabel value="Other" control={<Radio />} label="Other" />
                         </RadioGroup>
                        </FormControl>
-                       { internetDetails.product === 'Other' && (
+                       { currentProduct === 'Other' && (
                         <TextField
                            label="If other indicate the product"
                            name="other_product"

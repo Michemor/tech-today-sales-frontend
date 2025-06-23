@@ -58,7 +58,10 @@ const ClientList = () => {
             </Tabs>
         <Box>
             <Collapse in={value === '1'} timeout="auto" unmountOnExit>
-            <Paper>
+            <Paper sx={{
+            m: 2,
+            padding: 2 
+            }}>
                 <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>
                     Clients List    </Typography>
                 <DataGrid

@@ -31,7 +31,10 @@ export const OfficeList = () => {
     ]
 
     return (
-        <Paper sx={{ width: '100%', height: 400, marginTop: 2, padding: 2 }}>
+       <Paper sx={{ 
+            m: 2,
+            padding: 2 
+            }}>
             <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>
                 Offices List
             </Typography>
