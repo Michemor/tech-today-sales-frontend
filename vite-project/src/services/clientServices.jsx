@@ -237,3 +237,20 @@ export const updateInternet = async (newInternet) => {
         throw error;
     }
 }
+
+
+export const getSalesData = async () => {
+    try {
+        const response = await axiosInstance.get(`/sales`);
+        
+        if (response.data.success) {
+            console.log("Sales data retrieved successfully:", response.data.message);
+            return response.data.sales;
+        }
+    } catch (error) {
+        console.error("Error retrieving sales data:", error);
+        throw error;
+    }
+
+    return [];
+}
