@@ -36,23 +36,104 @@ export const sendData = async(officeData) => {
      return false;
 }
 
-export const getOffices = async () => {
+export const getBuildings = async () => {
     try {
-        const response = await axiosInstance.get(`/listsites`);
-        console.log("Response from API:", response.data);
-        const { success, message, buildings, offices} = response.data;
-        const data = {
-            buildings: buildings || [],
-            offices: offices || []
-        };
+        const response = await axiosInstance.get(`/locations/buildings`);
+        const { success, buildings } = response.data;
 
         if (success) {
-            console.log("Data retrieved successfully:", message);
-            return data;
+            console.log("Buildings retrieved successfully:", buildings);
+            return { success: true, buildings };
         }
     } catch (error) {
-        console.error("Error retrieving data:", error);
+        console.error("Error retrieving buildings:", error);
         throw error;
     }
-    return [];
+    return { success: false, buildings: [] };
+
+}
+
+export const getOffices = async () => {
+    try {
+        const response = await axiosInstance.get(`/locations/offices`);
+        const { success, offices } = response.data;
+
+        if (success) {
+            console.log("Offices retrieved successfully:", offices);
+            return { success: true, offices };
+        }
+    } catch (error) {
+        console.error("Error retrieving offices:", error);
+        throw error;
+    }
+    return { success: false, offices: [] };
+}
+
+export const deleteOffice = async (newOffice) => {
+    try {
+        const response = await axiosInstance.delete(`/locations/office/${newOffice.office_id}`, newOffice);
+        const { success, message } = response.data;
+
+        if (success) {
+            console.log("Office deleted successfully:", message);
+            return { success: true, message };
+        }
+    } catch (error) {
+        console.error("Error deleting office:", error);
+        throw error;
+    }
+    return { success: false, message: "Failed to delete office" };
+}
+
+export const updateOffice = async (newOffice) => {
+    try {
+        const response = await axiosInstance.put(`/locations/office/${newOffice.office_id}`, newOffice);
+        const { success, message } = response.data;
+
+        if (success) {
+            console.log("Office updated successfully:", message);
+            return { success: true, message };
+        }
+    } catch (error) {
+        console.error("Error updating office:", error);
+        throw error;
+    }
+    return { success: false, message: "Failed to update office" };
+}
+
+export const deleteBuilding = async (buildingId) => {
+    try {
+        const response = await axiosInstance.delete(`/locations/building/${buildingId}`);
+        const { success, message } = response.data;
+
+        if (success) {
+            console.log("Building deleted successfully:", message);
+            return { success: true, message };
+        }
+    } catch (error) {
+        console.error("Error deleting building:", error);
+        throw error;
+    }
+    return { success: false, message: "Failed to delete building" };
+}
+
+export const updateBuilding = async (buildingData) => {
+    if (!buildingData || Object.keys(buildingData).length === 0) {
+        console.error("No building data provided to update.");
+        return false;
+    }
+
+    try {
+        const response = await axiosInstance.put(`/locations/building/${buildingData.building_id}`, buildingData);
+        const { success, message } = response.data;
+
+        if (success) {
+            console.log("Building updated successfully:", message);
+            return { success: true, message };
+        }
+    } catch (error) {
+        console.error("Error updating building data:", error);
+        throw error;
+    }
+    return { success: false, message: "Failed to update building" };
 }

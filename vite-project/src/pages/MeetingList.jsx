@@ -4,11 +4,8 @@ import Paper from "@mui/material/Paper";
 import { DataGrid, GridRowModes, GridActionsCellItem, GridRowEditStopReasons } from "@mui/x-data-grid";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from '@mui/icons-material/Delete';
-import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
 import EditIcon from '@mui/icons-material/Edit';
-import { UpdateMeeting } from "../utils/UpdateMeeting";
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 
@@ -129,11 +126,12 @@ export const MeetingList = () => {
             },
         },
         { field: 'meeting_id', headerName: 'ID', width: 90, editable: false},
-        { field: 'meeting_date', headerName: 'Client Name', width: 150},
-        { field: 'meeting_location', headerName: 'Location', width: 200},
-        { field: 'meetingtype', headerName: 'Meeting Type', width: 150},
-        { field: 'meeting_remarks', headerName: 'Meeting Remarks', width: 200},
-        { field: 'meeting_status', headerName: 'Meeting Status', width: 200},
+        { field: 'meeting_date', headerName: 'Client Name', width: 150, editable: true},
+        { field: 'meeting_location', headerName: 'Location', width: 200, editable: true},
+        { field: 'meetingtype', headerName: 'Meeting Type', width: 150, editable: true},
+        { field: 'meeting_remarks', headerName: 'Meeting Remarks', width: 200, editable: true},
+        { field: 'meeting_status', headerName: 'Meeting Status', width: 200, editable: true},
+        {field: 'client_id', headerName: 'Client ID', width: 200},
     ];
 
     return (

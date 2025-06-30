@@ -9,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { deleteOffice } from "../services/clientServices";
+import Alert from '@mui/material/Alert';
 
 
 export const OfficeList = () => {
@@ -132,7 +133,7 @@ export const OfficeList = () => {
         { field: 'office_name', headerName: 'Office Name', width: 150 },
         { field: 'staff_number', headerName: 'Office Floor', width: 150 },
         { field: 'industry_category', headerName: 'More Data on Office', width: 200 },
-        { field: 'client_id', headerName: 'More Data on Office', width: 200 },
+        { field: 'client_id', headerName: 'Client ID', width: 200 },
     ]
 
     return (

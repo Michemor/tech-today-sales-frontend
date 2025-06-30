@@ -10,10 +10,10 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import CssBaseline from "@mui/material/CssBaseline";
-import Locations from "./pages/LocationsList";
 import ClientList from "./pages/ClientList";
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import Locations from "./pages/BuildingsList";
 
 export default function App() {
   const navigate = useNavigate();
