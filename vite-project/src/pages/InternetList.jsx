@@ -7,11 +7,60 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Alert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from "@mui/material/Button";
 
 
 export const InternetList = () => {
     const [internetDetails, setInternetDetails] = useState([]);
     const [rowsModesModel, setRowsModesModel] = useState({});
+    const [confirmDialog, setConfirmDialog] = useState({
+        open: false,
+        title: '',
+        content: '',
+        onConfirm: null
+    });
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: '',
+        message: ''
+    });
+
+    const showAlert = (severity, message) => {
+        setAlert({
+            open: true,
+            severity,
+            message
+        });
+        setTimeout(() => {
+            setAlert(prev => ({ ...prev, open: false }));
+        }, 3000);
+    };
+
+    const showConfirmDialog = (title, content, onConfirm) => {
+        setConfirmDialog({
+            open: true,
+            title,
+            content,
+            onConfirm
+        });
+    };
+
+    const handleConfirmClose = () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }));
+    };
+
+    const handleConfirmAction = () => {
+        if (confirmDialog.onConfirm) {
+            confirmDialog.onConfirm();
+        }
+        handleConfirmClose();
+    };
 
             const handleRowEditStop = (params, e) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -20,20 +69,33 @@ export const InternetList = () => {
     }
 
     const handleEditClick = (id) => () => {
-        setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.Edit }});
+        showConfirmDialog(
+            'Edit Internet Connection',
+            'Are you sure you want to edit this internet connection?',
+            () => {
+                setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.Edit }});
+            }
+        );
     }
     const handleSaveClick = (id) => () => {
         setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.View }});
     }
     const handleDeleteClick = (id) => async () => {
-        try {
-            const response = await deleteInternet(id);
-            setInternetDetails(internetDetails.filter((row) => row.internet_id !== id));
-            <Alert severity="success">Internet connection deleted successfully</Alert>
-            console.log('Internet Conenction Details deleted successfully:', response.message);
-        } catch (error){
-            console.error('Error in deleting network connection details:', error);
-        }
+        showConfirmDialog(
+            'Delete Internet Connection',
+            'Are you sure you want to delete this internet connection?',
+            async () => {
+                try {
+                    const response = await deleteInternet(id);
+                    setInternetDetails(internetDetails.filter((row) => row.internet_id !== id));
+                    showAlert("success", "Internet connection deleted successfully");
+                    console.log('Internet Connection Details deleted successfully:', response.message);
+                } catch (error){
+                    console.error('Error in deleting network connection details:', error);
+                    showAlert("error", "Error deleting internet connection");
+                }
+            }
+        );
     }
 
     const handleCancelClick = (id) => () => {
@@ -48,7 +110,7 @@ export const InternetList = () => {
             const response = await updateInternet(newRow);
             if (response.success) {
             // Update the local state with the updated data
-            <Alert severity="success">Internet Connection Details updated successfully</Alert>
+            showAlert("success", "Internet Connection Details updated successfully");
             setInternetDetails(prevInternetDetails => 
                 prevInternetDetails.map(internetDetails => 
                     internetDetails.internet_id === newRow.internet_id ? newRow : internetDetails
@@ -56,7 +118,8 @@ export const InternetList = () => {
             );
             return newRow;
         }} catch (error) {
-            console.error("Error updating meeting:", error);
+            console.error("Error updating internet connection:", error);
+            showAlert("error", "Error updating internet connection");
             throw error;
         }
 
@@ -137,8 +200,41 @@ export const InternetList = () => {
 
     return(
         <>
-       <Paper sx={{ 
-            m: 2,
+        {/* Alert */}
+        {alert.open && (
+            <Alert severity={alert.severity} sx={{ mb: 2 }}>
+                {alert.message}
+            </Alert>
+        )}
+
+        {/* Confirmation Dialog */}
+        <Dialog
+            open={confirmDialog.open}
+            onClose={handleConfirmClose}
+            aria-labelledby="confirm-dialog-title"
+            aria-describedby="confirm-dialog-description"
+        >
+            <DialogTitle id="confirm-dialog-title">
+                {confirmDialog.title}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="confirm-dialog-description">
+                    {confirmDialog.content}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleConfirmClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleConfirmAction} color="primary" variant="contained" autoFocus>
+                    Confirm
+                </Button>
+            </DialogActions>
+        </Dialog>
+
+       <Paper elevation={3} sx={{ 
+            mx: 2,
+            my: 2,
             padding: 2 
             }}>
             <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>

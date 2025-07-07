@@ -32,8 +32,9 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
         <>
         <Paper 
                 sx={{
+                  mx: 2,
+                  my: 2,
                   p: 4,
-                  m: 3,
                   backgroundColor: 'background.paper',
                   boxShadow: 3,
                   borderRadius: 2, 

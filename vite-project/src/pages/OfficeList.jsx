@@ -10,11 +10,59 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { deleteOffice } from "../services/clientServices";
 import Alert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from "@mui/material/Button";
 
 
 export const OfficeList = () => {
     const [offices, setOffices] = useState([]);
     const [rowsModesModel, setRowsModesModel] = useState({});
+    const [confirmDialog, setConfirmDialog] = useState({
+        open: false,
+        title: '',
+        content: '',
+        onConfirm: null
+    });
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: '',
+        message: ''
+    });
+
+    const showAlert = (severity, message) => {
+        setAlert({
+            open: true,
+            severity,
+            message
+        });
+        setTimeout(() => {
+            setAlert(prev => ({ ...prev, open: false }));
+        }, 3000);
+    };
+
+    const showConfirmDialog = (title, content, onConfirm) => {
+        setConfirmDialog({
+            open: true,
+            title,
+            content,
+            onConfirm
+        });
+    };
+
+    const handleConfirmClose = () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }));
+    };
+
+    const handleConfirmAction = () => {
+        if (confirmDialog.onConfirm) {
+            confirmDialog.onConfirm();
+        }
+        handleConfirmClose();
+    };
 
     
             const handleRowEditStop = (params, e) => {
@@ -24,20 +72,33 @@ export const OfficeList = () => {
         }
     
         const handleEditClick = (id) => () => {
-            setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.Edit }});
+            showConfirmDialog(
+                'Edit Office',
+                'Are you sure you want to edit this office?',
+                () => {
+                    setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.Edit }});
+                }
+            );
         }
         const handleSaveClick = (id) => () => {
             setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.View }});
         }
         const handleDeleteClick = (id) => async () => {
-            try {
-                const response = await deleteOffice(id);
-                setOffices(offices.filter((row) => row.office_id !== id));
-                <Alert severity="success">Office deleted successfully</Alert>
-                console.log('Office deleted successfully:', response.message);
-            } catch (error){
-                console.error('Error in deleting meeting:', error);
-            }
+            showConfirmDialog(
+                'Delete Office',
+                'Are you sure you want to delete this office?',
+                async () => {
+                    try {
+                        const response = await deleteOffice(id);
+                        setOffices(offices.filter((row) => row.office_id !== id));
+                        showAlert("success", "Office deleted successfully");
+                        console.log('Office deleted successfully:', response.message);
+                    } catch (error){
+                        console.error('Error in deleting office:', error);
+                        showAlert("error", "Error deleting office");
+                    }
+                }
+            );
         }
     
         const handleCancelClick = (id) => () => {
@@ -46,13 +107,13 @@ export const OfficeList = () => {
                 ignoreModifications: true 
             }});
         }
-    
+        
         const processRowUpdate = async (newRow) => {
             try {
                 const response = await updateOffice(newRow);
                 if (response.success) {
                 // Update the local state with the updated data
-                <Alert severity="success">Office updated successfully</Alert>
+                showAlert("success", "Office updated successfully");
                 setOffices(prevOffices => 
                     prevOffices.map(office => 
                         office.office_id === newRow.office_id ? newRow : office
@@ -60,10 +121,11 @@ export const OfficeList = () => {
                 );
                 return newRow;
             }} catch (error) {
-                console.error("Error updating meeting:", error);
+                console.error("Error updating office:", error);
+                showAlert("error", "Error updating office");
                 throw error;
             }
-    
+
         }
     
         const handleRowModelsChange = (newRowModels) => {
@@ -137,8 +199,42 @@ export const OfficeList = () => {
     ]
 
     return (
-       <Paper sx={{ 
-            m: 2,
+        <>
+        {/* Alert */}
+        {alert.open && (
+            <Alert severity={alert.severity} sx={{ mb: 2 }}>
+                {alert.message}
+            </Alert>
+        )}
+
+        {/* Confirmation Dialog */}
+        <Dialog
+            open={confirmDialog.open}
+            onClose={handleConfirmClose}
+            aria-labelledby="confirm-dialog-title"
+            aria-describedby="confirm-dialog-description"
+        >
+            <DialogTitle id="confirm-dialog-title">
+                {confirmDialog.title}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="confirm-dialog-description">
+                    {confirmDialog.content}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleConfirmClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleConfirmAction} color="primary" variant="contained" autoFocus>
+                    Confirm
+                </Button>
+            </DialogActions>
+        </Dialog>
+
+       <Paper elevation={3} sx={{ 
+            mx: 2,
+            my: 2,
             padding: 2 
             }}>
             <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>
@@ -163,6 +259,7 @@ export const OfficeList = () => {
                 }}
             />
         </Paper>
+        </>
     );
 
 }

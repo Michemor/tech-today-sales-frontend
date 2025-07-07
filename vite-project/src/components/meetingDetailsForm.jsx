@@ -11,8 +11,9 @@ export const MeetingDetailsForm = memo(({ meetingDetails, setMeetingDetails }) =
 
     return(
          <Paper sx={{
+          mx: 2,
+          my: 2,
           p: 4,
-          mt: 3,
           backgroundColor: 'background.paper',
           boxShadow: 3,
           borderRadius: 2, 

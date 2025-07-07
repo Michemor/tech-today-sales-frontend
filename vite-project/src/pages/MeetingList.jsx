@@ -8,10 +8,58 @@ import Alert from "@mui/material/Alert";
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from "@mui/material/Button";
 
 export const MeetingList = () => {
     const [meetings, setMeetings] = useState([]);
     const [rowsModesModel, setRowsModesModel] = useState({});
+    const [confirmDialog, setConfirmDialog] = useState({
+        open: false,
+        title: '',
+        content: '',
+        onConfirm: null
+    });
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: '',
+        message: ''
+    });
+
+    const showAlert = (severity, message) => {
+        setAlert({
+            open: true,
+            severity,
+            message
+        });
+        setTimeout(() => {
+            setAlert(prev => ({ ...prev, open: false }));
+        }, 3000);
+    };
+
+    const showConfirmDialog = (title, content, onConfirm) => {
+        setConfirmDialog({
+            open: true,
+            title,
+            content,
+            onConfirm
+        });
+    };
+
+    const handleConfirmClose = () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }));
+    };
+
+    const handleConfirmAction = () => {
+        if (confirmDialog.onConfirm) {
+            confirmDialog.onConfirm();
+        }
+        handleConfirmClose();
+    };
 
         const handleRowEditStop = (params, e) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -20,20 +68,33 @@ export const MeetingList = () => {
     }
 
     const handleEditClick = (id) => () => {
-        setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.Edit }});
+        showConfirmDialog(
+            'Edit Meeting',
+            'Are you sure you want to edit this meeting?',
+            () => {
+                setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.Edit }});
+            }
+        );
     }
     const handleSaveClick = (id) => () => {
         setRowsModesModel({...rowsModesModel, [id]: {mode: GridRowModes.View }});
     }
     const handleDeleteClick = (id) => async () => {
-        try {
-            const response = await deleteMeeting(id);
-            setMeetings( meetings.filter((row) => row.meeting_id !== id));
-            <Alert severity="success">Meeting deleted successfully</Alert>
-            console.log('Meeting deleted successfully:', response.message);
-        } catch (error){
-            console.error('Error in deleting meeting:', error);
-        }
+        showConfirmDialog(
+            'Delete Meeting',
+            'Are you sure you want to delete this meeting?',
+            async () => {
+                try {
+                    const response = await deleteMeeting(id);
+                    setMeetings( meetings.filter((row) => row.meeting_id !== id));
+                    showAlert("success", "Meeting deleted successfully");
+                    console.log('Meeting deleted successfully:', response.message);
+                } catch (error){
+                    console.error('Error in deleting meeting:', error);
+                    showAlert("error", "Error deleting meeting");
+                }
+            }
+        );
     }
 
     const handleCancelClick = (id) => () => {
@@ -48,7 +109,7 @@ export const MeetingList = () => {
             const response = await updateMeeting(newRow);
             if (response.success) {
             // Update the local state with the updated data
-            <Alert severity="success">Meeting updated successfully</Alert>
+            showAlert("success", "Meeting updated successfully");
             setMeetings(prevMeetings => 
                 prevMeetings.map(meeting => 
                     meeting.meeting_id === newRow.meeting_id ? newRow : meeting
@@ -57,6 +118,7 @@ export const MeetingList = () => {
             return newRow;
         }} catch (error) {
             console.error("Error updating meeting:", error);
+            showAlert("error", "Error updating meeting");
             throw error;
         }
 
@@ -136,8 +198,41 @@ export const MeetingList = () => {
 
     return (
         <>
-        <Paper sx={{ 
-            m: 2,
+        {/* Alert */}
+        {alert.open && (
+            <Alert severity={alert.severity} sx={{ mb: 2 }}>
+                {alert.message}
+            </Alert>
+        )}
+
+        {/* Confirmation Dialog */}
+        <Dialog
+            open={confirmDialog.open}
+            onClose={handleConfirmClose}
+            aria-labelledby="confirm-dialog-title"
+            aria-describedby="confirm-dialog-description"
+        >
+            <DialogTitle id="confirm-dialog-title">
+                {confirmDialog.title}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="confirm-dialog-description">
+                    {confirmDialog.content}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleConfirmClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleConfirmAction} color="primary" variant="contained" autoFocus>
+                    Confirm
+                </Button>
+            </DialogActions>
+        </Dialog>
+
+        <Paper elevation={3} sx={{ 
+            mx: 2,
+            my: 2,
             padding: 2 
             }}>
             <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>

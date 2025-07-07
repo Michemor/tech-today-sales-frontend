@@ -8,14 +8,14 @@ import Divider from "@mui/material/Divider";
 
 
 
-const ConfirmAlert = (title, content , open, handleClose) => {
+const ConfirmAlert = ({ title, content, open, onClose }) => {
 
     return (
         <>
         <Box>                   
                 <Alert
                 open={open}
-                onClose={handleClose}
+                onClose={onClose}
                 icon={<FeedbackIcon />}
                 severity="info"
                 variant="filled"
@@ -23,7 +23,7 @@ const ConfirmAlert = (title, content , open, handleClose) => {
                     <Typography variant="h6"> {title} </Typography>
                     <Divider sx={{ my: 2 }} />
                     <Typography variant="body1"> {content} </Typography>
-                    <Button onClick={handleClose} color="primary" variant="contained" sx={{ mr: 2 }}> OK </Button>
+                    <Button onClick={onClose} color="primary" variant="contained" sx={{ mr: 2 }}> OK </Button>
                 </Alert>
         </Box>
         </>

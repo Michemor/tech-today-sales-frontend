@@ -145,7 +145,8 @@ const OfficeData = () => {
            
             <Collapse in={value === '1'} timeout="auto" unmountOnExit>
                 <Paper elevation={2} sx={{
-                    m: 4,
+                    mx: 2,
+                    my: 2,
                     p: 4,
                     display: 'flex',
                     justifyContent: 'center',
@@ -200,7 +201,8 @@ const OfficeData = () => {
             
             <Collapse in={value === '2'} timeout="auto" unmountOnExit>
             <Paper elevation={2} sx={{
-                    m: 4,
+                    mx: 2,
+                    my: 2,
                     p: 4,
                     display: 'flex',
                     justifyContent: 'center',

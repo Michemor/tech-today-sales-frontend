@@ -10,10 +10,11 @@ import { ClientDetailsForm } from "../components/clientDetailsForm";
 import { MeetingDetailsForm } from "../components/meetingDetailsForm";
 import { InternetDetailsForm } from "../components/internetDetailsForm";
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
+import { useNavigate } from "react-router";
 
 export const ClientData = () => {
 
+    const navigate = useNavigate();
     const getToday = () => {
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -74,8 +75,8 @@ export const ClientData = () => {
 
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
+    e.preventDefault();
     // send data to backend
     try {
       const data = {
@@ -128,8 +129,26 @@ export const ClientData = () => {
         product: '',
         deal_status: '',
       });
-      setValue('1'); // Reset to first tab
+      
+      <Dialog
+      open={true}
+      
+      >
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Navigate to the Buildings Form to enter the details of the site.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => navigate('/locationform')} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      // Reset to first tab
     }
+
   }
 
   return (

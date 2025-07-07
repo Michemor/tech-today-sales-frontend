@@ -24,9 +24,9 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
         <>
         <Paper 
         sx={{
+          mx: 2,
+          my: 2,
           p: 4,
-          mt: 3,
-          mb: 3,
           backgroundColor: 'background.paper',
           boxShadow: 3,
           borderRadius: 2, 

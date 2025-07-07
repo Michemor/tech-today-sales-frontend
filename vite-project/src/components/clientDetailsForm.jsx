@@ -13,13 +13,12 @@ export const ClientDetailsForm = memo(({ clientDetails, setClientDetails }) => {
          <Paper sx={{
           border: '1px solid',
           borderColor: 'divider',
+          mx: 2,
+          my: 2,
           p: 3,
           backgroundColor: 'background.paper',
           boxShadow: 3,
           borderRadius: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
         }}>
           <Stack spacing={2} direction='column' sx={{ width: '100%' }}>
           <Typography variant="h5" component="h1" gutterBottom

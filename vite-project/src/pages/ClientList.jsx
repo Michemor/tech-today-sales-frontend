@@ -16,11 +16,59 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { deleteClient } from "../services/clientServices";
 import Alert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from "@mui/material/Button";
 
 const ClientList = () => {
     const [clients, setClients] = useState([]);
     const [value, setValue] = useState('1'); 
     const [rowModelsMode, setRowModelsMode] = useState({});
+    const [confirmDialog, setConfirmDialog] = useState({
+        open: false,
+        title: '',
+        content: '',
+        onConfirm: null
+    });
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: '',
+        message: ''
+    });
+
+    const showAlert = (severity, message) => {
+        setAlert({
+            open: true,
+            severity,
+            message
+        });
+        setTimeout(() => {
+            setAlert(prev => ({ ...prev, open: false }));
+        }, 3000);
+    };
+
+    const showConfirmDialog = (title, content, onConfirm) => {
+        setConfirmDialog({
+            open: true,
+            title,
+            content,
+            onConfirm
+        });
+    };
+
+    const handleConfirmClose = () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }));
+    };
+
+    const handleConfirmAction = () => {
+        if (confirmDialog.onConfirm) {
+            confirmDialog.onConfirm();
+        }
+        handleConfirmClose();
+    };
 
     const handleRowEditStop = (params, e) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -29,20 +77,33 @@ const ClientList = () => {
     }
 
     const handleEditClick = (id) => () => {
-        setRowModelsMode({...rowModelsMode, [id]: {mode: GridRowModes.Edit }});
+        showConfirmDialog(
+            'Edit Client',
+            'Are you sure you want to edit this client?',
+            () => {
+                setRowModelsMode({...rowModelsMode, [id]: {mode: GridRowModes.Edit }});
+            }
+        );
     }
     const handleSaveClick = (id) => () => {
         setRowModelsMode({...rowModelsMode, [id]: {mode: GridRowModes.View }});
     }
     const handleDeleteClick = (id) => async () => {
-        try {
-            const response = await deleteClient(id);
-            setClients( clients.filter((row) => row.client_id !== id));
-            <Alert severity="success">Client deleted successfully</Alert>
-            console.log('Client deleted successfully:', response.message);
-        } catch (error){
-            console.error('Error in deleting client:', error);
-        }
+        showConfirmDialog(
+            'Delete Client',
+            'Are you sure you want to delete this client?',
+            async () => {
+                try {
+                    const response = await deleteClient(id);
+                    setClients( clients.filter((row) => row.client_id !== id));
+                    showAlert("success", "Client deleted successfully");
+                    console.log('Client deleted successfully:', response.message);
+                } catch (error){
+                    console.error('Error in deleting client:', error);
+                    showAlert("error", "Error deleting client");
+                }
+            }
+        );
     }
 
     const handleCancelClick = (id) => () => {
@@ -57,7 +118,7 @@ const ClientList = () => {
             const response = await updateClient(newRow);
             if (response.success) {
             // Update the local state with the updated data
-            <Alert severity="success">Client updated successfully</Alert>
+            showAlert("success", "Client updated successfully");
             setClients(prevClients => 
                 prevClients.map(client => 
                     client.client_id === newRow.client_id ? newRow : client
@@ -66,6 +127,7 @@ const ClientList = () => {
             return newRow;
         }} catch (error) {
             console.error("Error updating client:", error);
+            showAlert("error", "Error updating client");
             throw error;
         }
 
@@ -151,6 +213,38 @@ const ClientList = () => {
     ];
     return (
         <>
+        {/* Alert */}
+        {alert.open && (
+            <Alert severity={alert.severity} sx={{ mb: 2 }}>
+                {alert.message}
+            </Alert>
+        )}
+
+        {/* Confirmation Dialog */}
+        <Dialog
+            open={confirmDialog.open}
+            onClose={handleConfirmClose}
+            aria-labelledby="confirm-dialog-title"
+            aria-describedby="confirm-dialog-description"
+        >
+            <DialogTitle id="confirm-dialog-title">
+                {confirmDialog.title}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="confirm-dialog-description">
+                    {confirmDialog.content}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleConfirmClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleConfirmAction} color="primary" variant="contained" autoFocus>
+                    Confirm
+                </Button>
+            </DialogActions>
+        </Dialog>
+
         <Tabs value={value} onChange={handleChange} centered>
                 <Tab label="Clients" value='1'/>
                 <Tab label="Meetings" value='2'/>
@@ -159,8 +253,9 @@ const ClientList = () => {
             </Tabs>
         <Box>
             <Collapse in={value === '1'} timeout="auto" unmountOnExit>
-            <Paper sx={{
-            m: 2,
+            <Paper elevation={3} sx={{
+            mx: 2,
+            my: 2,
             padding: 2 
             }}>
                 <Typography variant="h5" component="h2" sx={{ mb: 2, textAlign: 'center', color: 'primary.main' }}>
