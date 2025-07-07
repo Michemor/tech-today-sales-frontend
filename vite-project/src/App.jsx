@@ -1,4 +1,4 @@
-import OfficeData from "../src/pages/BuildingOfficeList";
+import OfficeData from "./pages/OfficeData";
 import ClientData from "../src/pages/ClientData";
 import { Routes, Route } from "react-router";
 import { useState } from "react";
@@ -144,12 +144,23 @@ export default function App() {
         anchor='left'
         open={open}
         >
-          <DrawerHeader>
-            <IconButton onClick={handleDrawerClose}>
+          <DrawerHeader sx={{
+            padding: theme.spacing(0, 1),
+            ...theme.mixins.toolbar,
+            height: '64px',
+            backgroundColor: 'primary.main',
+          }}>
+            <Typography noWrap component="div" sx={{ 
+              flexGrow: 1, 
+              fontSize: '20px',
+              color: '#fff',
+            }}>
+              Tech Today
+            </Typography>
+            <IconButton onClick={handleDrawerClose} sx={{ color: '#fff' }}>
               {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
           </DrawerHeader>
-          <Toolbar />
           <Divider />
           <List>
             <ListItem disablePadding>

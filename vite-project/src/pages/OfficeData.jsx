@@ -19,6 +19,7 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { sendData} from "../services/officeService";
 import CircularProgress from '@mui/material/CircularProgress';
+import { OfficeDetailForm } from "../components/officeDetailForm";
 
 
 const OfficeData = () => {
@@ -36,48 +37,37 @@ const OfficeData = () => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    
-    // inputs on office
-    const [office_name, setOfficeName] = useState('');
-    const [office_floor, setOfficeFloor] = useState(0);
-    const [number_of_offices, setNumberOfOffices] = useState(0);
-
-    // disables and enables the next tab based on whether the inputs are filled
-     const [step1Complete, setStep1Complete] = useState(false)
-    useEffect(() => {
-        setStep1Complete(office_name !== '' || office_floor !== 0 || number_of_offices !== 0)
-
-  }, [office_name, office_floor, number_of_offices]);
-
-
-    // handle navigation to next tab
-    const handleNext = () => {
-        if(!office_name || !office_floor || !number_of_offices){
-            setDialogOpen(true)
-        } else {
-           value === '1' ? setValue('2') : setValue('1');
-        }
-
-    }
-
-
-    // inputs on building
+        // inputs on building
     const [is_fibre_setup, setIsFibreSetup] = useState('');
     const [building_name, setBuildingName] = useState('');
     const [more_offices, setMoreOffices] = useState('');
     const [ease_of_access, setEaseOfAccess] = useState('');
     const [more_info_access, setMoreInfoAccess] = useState('');
 
+    const [officeDetails, setOfficeDetails] = useState({
+            office_name: '',
+            office_floor: 0,
+            number_staff: 0,
+            number_of_offices: 0,
+            industry: '',
+        });
 
-    const officeDict =  {
-        "office_name": office_name,
-        "office_floor": office_floor,
-        "number_of_offices": number_of_offices,
-        "is_fibre_setup": is_fibre_setup,
-        "building_name": building_name,
-        "more_offices": more_offices,
-        "ease_of_access": ease_of_access,
-        "more_info_access": more_info_access
+    // disables and enables the next tab based on whether the inputs are filled
+    const [step1Complete, setStep1Complete] = useState(false)
+    useEffect(() => {
+        setStep1Complete(building_name && is_fibre_setup && more_offices && ease_of_access && more_info_access);
+
+  }, [building_name, is_fibre_setup, more_offices, ease_of_access, more_info_access]);
+
+
+    // handle navigation to next tab
+    const handleNext = () => {
+        if(building_name === '' || is_fibre_setup === '' || more_offices === '' || ease_of_access === '' || more_info_access === ''){
+            setDialogOpen(true)
+        } else {
+           value === '1' ? setValue('2') : setValue('1');
+        }
+
     }
     
 
@@ -85,9 +75,22 @@ const OfficeData = () => {
     // handle Submit function
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if(!building_name || !is_fibre_setup || !more_offices || !ease_of_access || !more_info_access){
+        if(!officeDetails.office_name || !officeDetails.industry || officeDetails.number_staff === 0 || officeDetails.number_of_offices === 0 || officeDetails.office_floor === 0){
             setDialogOpen(true)
         } else {
+            
+        const officeDict =  {
+            "office_name": officeDetails.office_name,
+            "office_floor": officeDetails.office_floor,
+            "number_of_offices": officeDetails.number_of_offices,
+            "number_staff": officeDetails.number_staff,
+            "industry": officeDetails.industry,
+            "is_fibre_setup": is_fibre_setup,
+            "building_name": building_name,
+            "more_offices": more_offices,
+            "ease_of_access": ease_of_access,
+            "more_info_access": more_info_access
+        }
             try {
                 console.log(officeDict);
                 setIsSubmitting(true);
@@ -96,9 +99,13 @@ const OfficeData = () => {
                     console.log("Data submitted successfully");
 
                 // set fields to empty after submission
-                setOfficeName('');
-                setOfficeFloor(0);
-                setNumberOfOffices(0);
+                setOfficeDetails({
+                    office_name: '',
+                    office_floor: 0,
+                    number_staff: 0,
+                    number_of_offices: 0,
+                    industry: '',
+                });
                 setIsFibreSetup('');
                 setBuildingName('');
                 setMoreOffices('');
@@ -139,68 +146,12 @@ const OfficeData = () => {
             alignItems: 'center',
         }}
         value={value} onChange={handleChange} aria-label=" Sales Locations ">
-            <Tab value="1" label="Office Details" />
-            <Tab value="2" label="Building Information" disabled={!step1Complete} />
+            <Tab value="1" label="Building Information" />
+            <Tab value="2" label="Office Details" disabled={!step1Complete} />
             </Tabs>
            
             <Collapse in={value === '1'} timeout="auto" unmountOnExit>
-                <Paper elevation={2} sx={{
-                    mx: 2,
-                    my: 2,
-                    p: 4,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-
-            }}>
-                <Typography variant="h6" sx={{ color: 'primary.main', mb: 2 }}> Office Details </Typography>
-                 <Stack sx={{width: '100%'}} spacing={2} direction="column">
-                <TextField 
-                label="Office Name"
-                name="office_name"
-                value={office_name}
-                onChange={(e) => setOfficeName(e.target.value)}
-                variant="outlined"
-                required
-                sx={{ width: '100%', mt: 2 }}>
-                    Office Name
-                </TextField>
-                <TextField 
-                type="number"
-                label="Office Floor"
-                name="office_floor"
-                value={office_floor}
-                onChange={(e) => setOfficeFloor(e.target.value)}
-                variant="outlined"
-                required
-                sx={{ width: '100%', mt: 2 }}>
-                    Office Floor
-                </TextField>
-                <TextField 
-                label="Number of offices"
-                value={number_of_offices}
-                name="number_of_offices"
-                onChange={(e) => setNumberOfOffices(e.target.value)}
-                variant="outlined"
-                type="number"
-                required
-                sx={{ width: '100%', mt: 2 }}>
-                    Number of offices
-                </TextField>
-                </Stack>
-                <Button onClick={handleNext} color="primary" variant="contained" sx={{ 
-                    width: '50%',
-                    margin: '0 auto',
-                    display: 'block',
-                    mt: 2 }}>
-                    Next
-                </Button>
-            </Paper>
-            </Collapse>
-            
-            <Collapse in={value === '2'} timeout="auto" unmountOnExit>
-            <Paper elevation={2} sx={{
+             <Paper elevation={2} sx={{
                     mx: 2,
                     my: 2,
                     p: 4,
@@ -292,19 +243,29 @@ const OfficeData = () => {
                     rows={4}
                     />
                 </Stack>
-                <Stack direction='row' spacing={2} sx={{ width: '100%', mt: 2 }}>
+                </Paper>
+            </Collapse>
+            
+            <Collapse in={value === '2'} timeout="auto" unmountOnExit>
+            <OfficeDetailForm
+              officeDetails={officeDetails}
+              setOfficeDetails={setOfficeDetails}
+            />
+            </Collapse>
+              <Stack direction='row' spacing={2} sx={{ width: '100%', mt: 2 }}>
                 <Button onClick={handleNext} color="primary" variant="contained" sx={{ 
                     width: '50%',
                     margin: '0 auto',
                     display: 'block',
                     mt: 2 }}>
-                    Back
+                    Next
                 </Button>
-                <Button type="submit" color="primary" variant="contained" sx={{ 
+                <Button disabled={value === '1'} type="submit" color="primary" variant="contained" sx={{ 
                     width: '50%',
                     margin: '0 auto',
                     display: 'block',
-                    mt: 2 }}>
+                    mt: 2 }}
+                    >
                         Submit
                         </Button>
                     <Backdrop
@@ -316,8 +277,6 @@ const OfficeData = () => {
                     </Backdrop>
                 
                 </Stack>
-                </Paper>
-            </Collapse>
         </Box>
         </>
     );

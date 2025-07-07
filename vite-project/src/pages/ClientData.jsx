@@ -39,11 +39,6 @@ export const ClientData = () => {
     meetingStatus: '',
   });
 
-  const [officeDetails, setOfficeDetails] = useState({
-    office_name: '',
-    number_staff: 0,
-    industry: '',
-  });
 
   const [internetDetails, setInternetDetails] = useState({
     is_connected: 'false',
@@ -57,21 +52,17 @@ export const ClientData = () => {
 
   const [value, setValue] = useState('1');
   const handleNext = useCallback(() => {
-      if (!clientDetails.client_name || !clientDetails.client_email || !meetingDetails.meetingLocation || !officeDetails.office_name) {
+      if (!clientDetails.client_name || !clientDetails.client_email || !meetingDetails.meetingLocation) {
         alert('Please fill all required fields in Section 1 before proceeding to Section 2.');
         return;
       }
       if (!meetingDetails.meetingDate) {
         alert('Please select a meeting date.');
         return;
-      }
-      if (!officeDetails.industry) {
-        alert('Please select an industry for the office details.');
-        return;
-    } else {
+      } else {
           setValue((prev) => (prev === '1' ? '2' : '1'));
     }
-  }, [clientDetails, meetingDetails, officeDetails]);
+  }, [clientDetails, meetingDetails]);
 
 
   const handleSubmit = async (e) => {
@@ -82,7 +73,6 @@ export const ClientData = () => {
       const data = {
         ...clientDetails,
         ...meetingDetails,
-        ...officeDetails,
         ...internetDetails,
       }
       const response = await sendClientData(data);
@@ -115,12 +105,6 @@ export const ClientData = () => {
         meetingType: '',
         meetingStatus: '',
       });
-      setOfficeDetails({
-        office_name: '',
-        number_staff: 0,
-        industry: '',
-      });
-
       setInternetDetails({
         is_connected: 'false',
         isp_name: '',
@@ -175,10 +159,6 @@ export const ClientData = () => {
         <MeetingDetailsForm
         meetingDetails={meetingDetails}
         setMeetingDetails={setMeetingDetails}/>
-
-        <OfficeDetailForm
-        officeDetails={officeDetails}
-        setOfficeDetails={setOfficeDetails}/>
 
         <Button
         onClick={handleNext}

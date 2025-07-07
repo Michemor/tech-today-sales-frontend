@@ -17,8 +17,26 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
   const [currentCategory, setCurrentCategory] = useState(officeDetails.industry || '');
 
   const handleCategoryChange = (event) => {
-    setCurrentCategory(event.target.value);
-  }
+    const newCategory = event.target.value;
+    setCurrentCategory(newCategory);
+    setOfficeDetails({ ...officeDetails, industry: newCategory });
+  };
+
+  const handlePositiveIntegerChange = (fieldName) => (event) => {
+    const value = event.target.value;
+    
+    // Allow empty string for better UX while typing
+    if (value === '') {
+      setOfficeDetails({ ...officeDetails, [fieldName]: '' });
+      return;
+    }
+    
+    // Only allow positive integers
+    const numericValue = parseInt(value, 10);
+    if (!isNaN(numericValue) && numericValue > 0 && value === numericValue.toString()) {
+      setOfficeDetails({ ...officeDetails, [fieldName]: value });
+    }
+  };
 
     return (
         <>
@@ -47,14 +65,66 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
             variant="outlined"
             fullWidth
             />
+            <TextField 
+                label="Number of offices"
+                value={officeDetails.number_of_offices}
+                name="number_of_offices"
+                onChange={handlePositiveIntegerChange('number_of_offices')}
+                variant="outlined"
+                type="number"
+                inputProps={{ 
+                  min: 1,
+                  step: 1,
+                  pattern: "[1-9][0-9]*"
+                }}
+                onKeyDown={(e) => {
+                  // Prevent typing negative signs, decimal points, and 'e'
+                  if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                    e.preventDefault();
+                  }
+                }}
+                required
+                sx={{ width: '100%', mt: 2 }}
+                />
             <TextField
             label="Number of Staff"
             name='number_staff'
             value={officeDetails.number_staff}
-            onChange={(e) => setOfficeDetails({ ...officeDetails, number_staff: e.target.value })}
+            onChange={handlePositiveIntegerChange('number_staff')}
             required
             type="number"
+            inputProps={{ 
+              min: 1,
+              step: 1,
+              pattern: "[1-9][0-9]*"
+            }}
+            onKeyDown={(e) => {
+              // Prevent typing negative signs, decimal points, and 'e'
+              if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                e.preventDefault();
+              }
+            }}
             variant="outlined"/>
+             <TextField 
+                type="number"
+                label="Office Floor"
+                name="office_floor"
+                value={officeDetails.office_floor}
+                onChange={handlePositiveIntegerChange('office_floor')}
+                variant="outlined"
+                inputProps={{ 
+                  min: 1,
+                  step: 1,
+                  pattern: "[1-9][0-9]*"
+                }}
+                onKeyDown={(e) => {
+                  // Prevent typing negative signs, decimal points, and 'e'
+                  if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                    e.preventDefault();
+                  }
+                }}
+                required
+                sx={{ width: '100%', mt: 2 }}/>
             <Box
             sx={{
               border: '1px solid',
@@ -63,7 +133,7 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
               borderRadius: 2,
               color: 'text.secondary',
             }}
-            >
+            > 
             <FormControl>
               <FormLabel id="industry"> Industry Category </FormLabel>
               <RadioGroup
