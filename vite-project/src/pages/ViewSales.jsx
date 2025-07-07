@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { getSalesData } from "../services/salesServices";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -14,8 +13,11 @@ export const ViewSales = () => {
     const [clients, setClients] = useState([]);
 
     useEffect(() => {
-        const getClients = await getClients();
-        
+        const fetchClients = async () => {
+            const clientsData = await getClients();
+            setClients(clientsData || []);
+        };
+        fetchClients();
     }, []);
     
 

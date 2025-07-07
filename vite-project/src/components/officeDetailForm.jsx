@@ -152,8 +152,8 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
               <TextField
                 label="Specify Other Industry"
                 name='other_industry'
-                value={officeDetails.other_industry}
-                onChange={(e) => setOfficeDetails({ ...officeDetails, other_industry: e.target.value })}
+                value={officeDetails.industry}
+                onChange={(e) => setOfficeDetails({ ...officeDetails, industry: e.target.value })}
                 variant="outlined"
                 fullWidth
               />
