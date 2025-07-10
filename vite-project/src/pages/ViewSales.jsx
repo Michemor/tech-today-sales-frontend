@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
 import { getClients } from "../services/clientServices";
+import Grid from "@mui/material/Grid";
 
 
 export const ViewSales = () => {
@@ -39,8 +40,10 @@ export const ViewSales = () => {
                 Sales overview
             </Typography>
             <Divider/>
-            <Card sx={{ display: 'flex' }}>
-            </Card>
+
+            <Grid container spacing={2} sx={{ marginTop: 2 }}>
+                
+            </Grid>
         </Paper>
         </>
     )
