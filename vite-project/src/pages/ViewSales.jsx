@@ -1,26 +1,31 @@
-import { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
+import { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import Card from "@mui/material/Card";
-import { getClients } from "../services/clientServices";
-import Grid from "@mui/material/Grid";
+import { getSalesData } from "../services/clientServices";
+import { DataGrid } from '@mui/x-data-grid';
 
 
 export const ViewSales = () => {
 
-    // fetching client details first
-
-    const [clients, setClients] = useState([]);
+    const [salesData, setSalesData] = useState([]);
 
     useEffect(() => {
-        const fetchClients = async () => {
-            const clientsData = await getClients();
-            setClients(clientsData || []);
+        const fetchData = async () => {
+            const data = await getSalesData();
+            setSalesData(data);
         };
-        fetchClients();
+        fetchData();
     }, []);
-    
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 90 },
+        { field: 'clientName', headerName: 'Client Name', width: 150 },
+        { field: 'product', headerName: 'Product', width: 150 },
+        { field: 'quantity', headerName: 'Quantity', width: 110 },
+        { field: 'price', headerName: 'Price', width: 110 },
+        { field: 'date', headerName: 'Date', width: 150 },
+    ]
 
     return(
         <>
@@ -40,10 +45,18 @@ export const ViewSales = () => {
                 Sales overview
             </Typography>
             <Divider/>
-
-            <Grid container spacing={2} sx={{ marginTop: 2 }}>
-                
-            </Grid>
+           <DataGrid
+               rows={salesData}
+               columns={columns}
+               getRowId={(row) => row.id}
+               initialState={{
+                pagination: {
+                    paginationModel: { page: 0, pageSize: 5 },
+                }
+               }}
+               pageSize={5}
+               rowsPerPageOptions={[5]}
+           />
         </Paper>
         </>
     )

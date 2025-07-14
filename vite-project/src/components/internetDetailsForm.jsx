@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -19,14 +19,56 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
     const [currentPrice, setCurrentPrice] = useState(internetDetails.net_price || '');
     const [currentProduct, setCurrentProduct] = useState(internetDetails.product || '');
 
-    const handleChange = (event, newValue) => {
-        setCurrentSelection(newValue)
+    // Memoized update functions for better performance
+    const updateField = useCallback((field) => (event) => {
+        setInternetDetails(prev => ({ ...prev, [field]: event.target.value }));
+    }, [setInternetDetails]);
+
+    const updateAutocompleteField = useCallback((field) => (event, newValue) => {
+        setInternetDetails(prev => ({ ...prev, [field]: newValue }));
+    }, [setInternetDetails]);
+
+    const updateOtherISP = useCallback((event) => {
+        setInternetDetails(prev => ({ ...prev, other_isp: event.target.value, isp_name: event.target.value }));
+    }, [setInternetDetails]);
+
+    const updateOtherPrice = useCallback((event) => {
+        setInternetDetails(prev => ({ ...prev, other_price: event.target.value, net_price: event.target.value }));
+    }, [setInternetDetails]);
+
+    const updateOtherProduct = useCallback((event) => {
+        setInternetDetails(prev => ({ ...prev, other_product: event.target.value, product: event.target.value }));
+    }, [setInternetDetails]);
+
+    const handleISPChange = useCallback((event) => {
+        const newValue = event.target.value;
+        setCurrentSelection(newValue);
+        if (newValue === 'Other') {
+            setInternetDetails(prev => ({ ...prev, isp_name: newValue }));
+        } else {
+            setInternetDetails(prev => ({ ...prev, isp_name: newValue, other_isp: '' }));
+        }
+    }, [setInternetDetails]);
+
+    const handlePriceChange = useCallback((event) => {
+        const newValue = event.target.value;
         setCurrentPrice(newValue);
+        if (newValue === 'Other') {
+            setInternetDetails(prev => ({ ...prev, net_price: newValue }));
+        } else {
+            setInternetDetails(prev => ({ ...prev, net_price: newValue, other_price: '' }));
+        }
+    }, [setInternetDetails]);
+
+    const handleProductChange = useCallback((event) => {
+        const newValue = event.target.value;
         setCurrentProduct(newValue);
-        setInternetDetails({ ...internetDetails, isp_name: newValue });
-        setInternetDetails({ ...internetDetails, net_price: newValue });
-        setInternetDetails({ ...internetDetails, product: newValue });
-    } 
+        if (newValue === 'Other') {
+            setInternetDetails(prev => ({ ...prev, product: newValue }));
+        } else {
+            setInternetDetails(prev => ({ ...prev, product: newValue, other_product: '' }));
+        }
+    }, [setInternetDetails]); 
     
     return(
         <>
@@ -60,7 +102,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                 <RadioGroup                  
                   name="is_connected"
                   value={internetDetails.is_connected}
-                  onChange={(e) => setInternetDetails({ ...internetDetails, is_connected: e.target.value })}
+                  onChange={updateField('is_connected')}
                   sx={{ color: 'text.secondary' }}>
                   <FormControlLabel value="true" control={<Radio />} label="Yes" />
                   <FormControlLabel value="false" control={<Radio />} label="No" />
@@ -82,7 +124,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                       <RadioGroup                        
                         name="isp_name"
                         value={currentSelection}
-                        onChange={(e) => handleChange(e, e.target.value)}
+                        onChange={handleISPChange}
                         sx={{ color: 'text.secondary' }}>
                         <FormControlLabel value="Liquid" control={<Radio />} label="Liquid" />
                         <FormControlLabel value="Safaricom Fibre" control={<Radio />} label="Safaricom Fibre" />
@@ -96,8 +138,8 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                     { currentSelection === 'Other' && (
                     <TextField
                     name="other_isp"
-                    value={internetDetails.isp_name}
-                    onChange={(e) => setInternetDetails({ ...internetDetails, isp_name: e.target.value })}
+                    value={internetDetails.other_isp || ''}
+                    onChange={updateOtherISP}
                     label="If Other indicate the ISP name"
                     variant="outlined"
                     fullWidth
@@ -116,7 +158,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                     <FormLabel id="net-price"> Price/Rate per month </FormLabel>
                     <RadioGroup
                     value={currentPrice}
-                    onChange={(e) => handleChange(e, e.target.value)}
+                    onChange={handlePriceChange}
                     name="net_price"
                     sx={{ color: 'text.secondary' }}>
                       <FormControlLabel value="Below 5000" control={<Radio />} label="Below 5000" />
@@ -128,8 +170,8 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                   {currentPrice === 'Other' && (
                      <TextField
                   name='other_price'
-                  value={internetDetails.net_price}
-                  onChange={(e) => setInternetDetails({ ...internetDetails, net_price: e.target.value })}
+                  value={internetDetails.other_price || ''}
+                  onChange={updateOtherPrice}
                   label="If Other indicate the price"
                   variant="outlined"
                   fullWidth
@@ -141,7 +183,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                   <Autocomplete
                   options={['Dedicated', 'Shared']}
                   value={internetDetails.connection_type}
-                  onChange={(e, newVal) => setInternetDetails({ ...internetDetails, connection_type: newVal })}
+                  onChange={updateAutocompleteField('connection_type')}
                   renderInput={(params) => (
                     <TextField 
                     {...params} 
@@ -162,7 +204,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                       <RadioGroup
                         name="product"
                         value={currentProduct}
-                        onChange={(e) => handleChange(e, e.target.value)}
+                        onChange={handleProductChange}
                         sx={{ color: 'text.secondary' }}>
                         <FormControlLabel value="Internet" control={<Radio />} label="Internet" />
                         <FormControlLabel value="Domain & Hosting" control={<Radio />} label="Domain & Hosting" />
@@ -175,8 +217,8 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                            label="If other indicate the product"
                            name="other_product"
                            fullWidth
-                           value={internetDetails.product}
-                           onChange={(e) => setInternetDetails({ ...internetDetails, product: e.target.value })}
+                           value={internetDetails.other_product || ''}
+                           onChange={updateOtherProduct}
                            variant="outlined"
                             />
                        )}
@@ -191,7 +233,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                         variant="outlined" />
                       )}
                       value={internetDetails.deal_status}
-                      onChange={(e, newVal) => setInternetDetails({ ...internetDetails, deal_status: newVal })}
+                      onChange={updateAutocompleteField('deal_status')}
                       />
                 </Stack>
               </Collapse>
