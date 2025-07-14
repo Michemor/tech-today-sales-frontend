@@ -8,7 +8,7 @@ import PinDropRoundedIcon from '@mui/icons-material/PinDropRounded';
 import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import CustomCard from '../components/CustomCard'
-import { ClientDetailsForm } from '../components/clientDetailsForm'
+import { ClientDetailsForm } from '../components/ClientDetailsForm'
 import { OfficeDetailForm } from '../components/officeDetailForm'
 import { MeetingDetailsForm } from '../components/meetingDetailsForm'
 import { InternetDetailsForm } from '../components/internetDetailsForm'
@@ -37,11 +37,28 @@ import { sendClientData } from '../services/clientServices';
 export default function Home() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const navigate = useNavigate();
     
     const [anchorEl, setAnchorEl] = useState(null);
     const [comprehensiveFormOpen, setComprehensiveFormOpen] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
     const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [alert, setAlert] = useState({
+        open: false,
+        severity: '',
+        message: ''
+    });
+    
+    const showAlert = (severity, message) => {
+        setAlert({
+            open: true,
+            severity,
+            message
+        });
+        setTimeout(() => {
+            setAlert(prev => ({ ...prev, open: false }));
+        }, 3000);
+    };
     
     const [clientDetails, setClientDetails] = useState({
       client_name: '',
@@ -100,64 +117,44 @@ export default function Home() {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const handleClick = (path) => {
+      navigate(path);
+    };
+
     const handleSubmit = async () => {
       // Here you would typically send data to your backend
-      const response = await sendClientData({
-        clientDetails,
-        meetingDetails,
-        internetDetails,
-        buildingDetails,
-        officeDetails
-      });
+      try {
+        const data = {
+          ...clientDetails,
+          ...meetingDetails,
+          ...internetDetails,
+          ...buildingDetails,
+          ...officeDetails
+        }
+        const response = await sendClientData(data);
 
-      if (response.success) {
-        console.log('Data submitted successfully:', response.data);
-        setSubmitSuccess(true);
-        setTimeout(() => {
-          setSubmitSuccess(false);
+        if (response && response.success) {
+          console.log('Data submitted successfully');
+          setSubmitSuccess(true);
+          setTimeout(() => {
+            setSubmitSuccess(false);
+            setComprehensiveFormOpen(false);
+            setActiveStep(0);
+          }, 2000);
+        } else {
+          showAlert('error', `Failed to submit data. Please try again,`);
+          console.log('Failed to submit data:', response?.message || 'Unknown error');
+          // Close dialog and reset form even on failure
           setComprehensiveFormOpen(false);
           setActiveStep(0);
-          // Reset all form data
-          setClientDetails({
-            client_name: '',
-            client_email: '',
-            contact: '',
-            job: '',
-            deal_info: ''
-          });
-          setMeetingDetails({});
-          setInternetDetails({
-            isp_name: '',
-            net_price: '',
-            product: '',
-            other_isp: '',
-            other_price: '',
-            other_product: '',
-            is_connected: ''
-          });
-          setBuildingDetails({
-            building_name: '',
-            is_fibre_setup: '',
-            more_offices: '',
-            ease_of_access: '',
-            more_info_access: ''
-          });
-          setOfficeDetails({});
-        }, 2000);
-      }
-
-      console.log('Submitting all form data:', {
-        clientDetails,
-        meetingDetails,
-        internetDetails,
-        buildingDetails,
-        officeDetails
-      });
-      setSubmitSuccess(true);
-      setTimeout(() => {
-        setSubmitSuccess(false);
+        }
+      } catch (error) {
+        console.error('Error submitting data:', error);
+        showAlert('error', 'Failed to submit data. Please try again.');
+        // Close dialog and reset form even on error
         setComprehensiveFormOpen(false);
         setActiveStep(0);
+      } finally {
         // Reset all form data
         setClientDetails({
           client_name: '',
@@ -184,7 +181,7 @@ export default function Home() {
           more_info_access: ''
         });
         setOfficeDetails({});
-      }, 2000);
+      }
     };
 
     const renderStepContent = (step) => {
@@ -229,13 +226,15 @@ export default function Home() {
       }
     };
 
-    const navigate = useNavigate();
-    const handleClick = (path) => {
-      navigate(path);
-    };
   return (
     <>
       <CssBaseline/>
+      {/* Alert */}
+      {alert.open && (
+          <Alert severity={alert.severity} sx={{ mb: 2, mx: 2 }}>
+              {alert.message}
+          </Alert>
+      )}
       <Box 
         sx={{ 
           minHeight: '100vh',

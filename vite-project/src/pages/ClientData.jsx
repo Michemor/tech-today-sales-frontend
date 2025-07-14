@@ -6,7 +6,7 @@ import Tabs from "@mui/material/Tabs";
 import Collapse from "@mui/material/Collapse";
 import { sendClientData } from "../services/clientServices";
 import { useCallback } from "react";
-import { ClientDetailsForm } from "../components/clientDetailsForm";
+import { ClientDetailsForm } from "../components/ClientDetailsForm";
 import { MeetingDetailsForm } from "../components/meetingDetailsForm";
 import { InternetDetailsForm } from "../components/internetDetailsForm";
 import Button from "@mui/material/Button";

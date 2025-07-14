@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -16,6 +16,11 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
+  // Memoized update functions for better performance
+  const updateField = useCallback((field) => (event) => {
+    setBuildingDetails(prev => ({ ...prev, [field]: event.target.value }));
+  }, [setBuildingDetails]);
   
   return (
     <Paper sx={{
@@ -42,7 +47,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
         <TextField
           name='building_name'
           value={buildingDetails.building_name || ''}
-          onChange={(e) => setBuildingDetails({ ...buildingDetails, building_name: e.target.value })}
+          onChange={updateField('building_name')}
           label="Building Name"
           variant="outlined"
           fullWidth
@@ -63,7 +68,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
             <RadioGroup 
               name="is_fibre_setup"
               value={buildingDetails.is_fibre_setup || ''}
-              onChange={(e) => setBuildingDetails({ ...buildingDetails, is_fibre_setup: e.target.value })}
+              onChange={updateField('is_fibre_setup')}
               sx={{ 
                 color: 'secondary.dark',
                 '& .MuiFormControlLabel-label': {
@@ -85,7 +90,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
         <TextField
           name='more_offices'
           value={buildingDetails.more_offices || ''}
-          onChange={(e) => setBuildingDetails({ ...buildingDetails, more_offices: e.target.value })}
+          onChange={updateField('more_offices')}
           label="More information on offices i.e floor and name"
           variant="outlined"
           fullWidth
@@ -108,7 +113,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
             <RadioGroup
               name="ease_of_access"
               value={buildingDetails.ease_of_access || ''}
-              onChange={(e) => setBuildingDetails({ ...buildingDetails, ease_of_access: e.target.value })}
+              onChange={updateField('ease_of_access')}
               sx={{ 
                 color: 'secondary.dark',
                 '& .MuiFormControlLabel-label': {
@@ -140,7 +145,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
         <TextField
           name='more_info_access'
           value={buildingDetails.more_info_access || ''}
-          onChange={(e) => setBuildingDetails({ ...buildingDetails, more_info_access: e.target.value })}
+          onChange={updateField('more_info_access')}
           label="Additional Information regarding access to the building"
           variant="outlined"
           fullWidth

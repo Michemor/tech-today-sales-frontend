@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -8,6 +8,15 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 
 export const MeetingDetailsForm = memo(({ meetingDetails, setMeetingDetails }) => {
+
+    // Memoized update functions for better performance
+    const updateField = useCallback((field) => (event) => {
+        setMeetingDetails(prev => ({ ...prev, [field]: event.target.value }));
+    }, [setMeetingDetails]);
+
+    const updateAutocompleteField = useCallback((field) => (event, newValue) => {
+        setMeetingDetails(prev => ({ ...prev, [field]: newValue }));
+    }, [setMeetingDetails]);
 
     return(
          <Paper sx={{
@@ -35,7 +44,7 @@ export const MeetingDetailsForm = memo(({ meetingDetails, setMeetingDetails }) =
           name='meetingDate'
           type='date'
           value={meetingDetails.meetingDate}
-          onChange={(e) => setMeetingDetails({ ...meetingDetails, meetingDate: e.target.value })}
+          onChange={updateField('meetingDate')}
           required
           fullWidth
           />
@@ -43,7 +52,7 @@ export const MeetingDetailsForm = memo(({ meetingDetails, setMeetingDetails }) =
           name='meetingLocation'
           label="Meeting Location"
           value={meetingDetails.meetingLocation}
-          onChange={(e) => setMeetingDetails({ ...meetingDetails, meetingLocation: e.target.value })}
+          onChange={updateField('meetingLocation')}
           fullWidth
           required
           variant="outlined"
@@ -51,7 +60,7 @@ export const MeetingDetailsForm = memo(({ meetingDetails, setMeetingDetails }) =
           <TextField
           name='meetingRemarks'
           value={meetingDetails.meetingRemarks}
-          onChange={(e) => setMeetingDetails({ ...meetingDetails, meetingRemarks: e.target.value })}
+          onChange={updateField('meetingRemarks')}
           fullWidth
           label="Meeting Remarks"
           variant="outlined"
@@ -62,7 +71,7 @@ export const MeetingDetailsForm = memo(({ meetingDetails, setMeetingDetails }) =
           options={['In-person', 'Online', 'Phone']}
           sx={{ width: '100%' }}
           value={meetingDetails.meetingType}
-          onChange={(e, newVal) => setMeetingDetails({ ...meetingDetails, meetingType: newVal})}
+          onChange={updateAutocompleteField('meetingType')}
           getOptionLabel={(option) => option?.toString() || ''}
           renderInput={(params) => (
             <TextField 
@@ -80,7 +89,7 @@ export const MeetingDetailsForm = memo(({ meetingDetails, setMeetingDetails }) =
             variant="outlined" />
           )}
           value={meetingDetails.meetingStatus}
-          onChange={(e, newVal) => setMeetingDetails({ ...meetingDetails, meetingStatus: newVal})}
+          onChange={updateAutocompleteField('meetingStatus')}
           />
           </Stack>
         </Paper>

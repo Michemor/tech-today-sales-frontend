@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -16,27 +16,36 @@ import { useState } from 'react';
 export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
   const [currentCategory, setCurrentCategory] = useState(officeDetails.industry || '');
 
-  const handleCategoryChange = (event) => {
+  // Memoized update functions for better performance
+  const updateField = useCallback((field) => (event) => {
+    setOfficeDetails(prev => ({ ...prev, [field]: event.target.value }));
+  }, [setOfficeDetails]);
+
+  const updateOtherIndustry = useCallback((event) => {
+    setOfficeDetails(prev => ({ ...prev, other_industry: event.target.value, industry: event.target.value }));
+  }, [setOfficeDetails]);
+
+  const handleCategoryChange = useCallback((event) => {
     const newCategory = event.target.value;
     setCurrentCategory(newCategory);
-    setOfficeDetails({ ...officeDetails, industry: newCategory });
-  };
+    setOfficeDetails(prev => ({ ...prev, industry: newCategory }));
+  }, [setOfficeDetails]);
 
-  const handlePositiveIntegerChange = (fieldName) => (event) => {
+  const handlePositiveIntegerChange = useCallback((fieldName) => (event) => {
     const value = event.target.value;
     
     // Allow empty string for better UX while typing
     if (value === '') {
-      setOfficeDetails({ ...officeDetails, [fieldName]: '' });
+      setOfficeDetails(prev => ({ ...prev, [fieldName]: '' }));
       return;
     }
     
     // Only allow positive integers
     const numericValue = parseInt(value, 10);
     if (!isNaN(numericValue) && numericValue > 0 && value === numericValue.toString()) {
-      setOfficeDetails({ ...officeDetails, [fieldName]: value });
+      setOfficeDetails(prev => ({ ...prev, [fieldName]: value }));
     }
-  };
+  }, [setOfficeDetails]);
 
     return (
         <>
@@ -60,7 +69,7 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
             label="Office Name"
             name='office_name'
             value={officeDetails.office_name}
-            onChange={(e) => setOfficeDetails({ ...officeDetails, office_name: e.target.value })}
+            onChange={updateField('office_name')}
             required
             variant="outlined"
             fullWidth
@@ -153,7 +162,7 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
                 label="Specify Other Industry"
                 name='other_industry'
                 value={officeDetails.other_industry || ''}
-                onChange={(e) => setOfficeDetails({ ...officeDetails, other_industry: e.target.value, industry: e.target.value })}
+                onChange={updateOtherIndustry}
                 variant="outlined"
                 fullWidth
               />
