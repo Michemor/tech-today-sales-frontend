@@ -13,7 +13,6 @@ import TextField from "@mui/material/TextField";
 import PersonIcon from '@mui/icons-material/Person';
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
-import Select from "@mui/material/Select";
 
 const CompleteData = () => {
     const { id } = useParams();
@@ -32,7 +31,10 @@ const CompleteData = () => {
     return(
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
-                <Link href="/sales" underline="hover" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link href="/" underline="hover" sx={{ textDecoration: 'none', color: 'inherit' }}>
+                    Home
+                </Link>
+                <Link href="/sales" underline="hover" sx={{ textDecoration: 'none', color: 'inherit' }}>
                     Sales
                 </Link>
                 <Typography color="text.primary">

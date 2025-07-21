@@ -59,27 +59,27 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   }),
 );
 
-const TopAppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  variants: [
-    {
-      props: ({ open }) => open,
-      style: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: `${drawerWidth}px`,
-        transition: theme.transitions.create(['margin', 'width'], {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-      },
-    },
-  ],
-}));
+const TopAppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open',})(
+  ({ theme }) => ({
+      transition: theme.transitions.create(['margin', 'width'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      variants: [
+        {
+          props: ({ open }) => open,
+          style: {
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: `${drawerWidth}px`,
+            transition: theme.transitions.create(['margin', 'width'], {
+              easing: theme.transitions.easing.easeOut,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+          },
+        },
+      ],
+    })
+  );
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -146,11 +146,18 @@ export default function App() {
         open={open}
         >
           <DrawerHeader>
+            <Typography 
+            variant="h6" noWrap 
+            sx={{ 
+              flexGrow: 1, 
+              textAlign: 'center',
+              color: 'primary.main',
+              fontWeight: 'bold',
+              }}> TecToday </Typography>
             <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              {theme.direction === 'ltr' ? <ChevronLeftIcon sx={{ color: 'primary.main' }} /> : <ChevronRightIcon sx={{ color: 'primary.main' }} />}
             </IconButton>
           </DrawerHeader>
-          <Toolbar />
           <Divider />
           <List>
             <ListItem disablePadding>
@@ -165,16 +172,14 @@ export default function App() {
                   <ListItemText primary="Home" />
                   </ListItemButton>
                   </ListItem>
-            {['Client Form', 'Location Form', 'Clients', 'Locations', 'Sales'].map((text, index) => (
+            {['Clients', 'Locations', 'Sales'].map((text, index) => (
               <ListItem key={text} disablePadding>
                     <ListItemButton onClick={() => handleNavigation(`/${text.toLowerCase().replace(' ', '')}`)}>
                   <ListItemIcon sx={{ color: 'primary.main' }}>
                     {index === 0 ? <ModeEditIcon /> : 
                      index === 1 ? <EditLocationAltIcon /> : 
                      index === 2 ? <PeopleIcon /> : 
-                     index === 3 ?  <LocationOnIcon /> : 
-                     index === 4 ? <Inventory2Icon /> : 
-                     <AccountCircleRoundedIcon />}
+                     <LocationOnIcon />}
                   </ListItemIcon>
                   <ListItemText primary={text} />
                       </ListItemButton>
@@ -187,8 +192,6 @@ export default function App() {
         <DrawerHeader />
         <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/clientform" element={<ClientData />} />
-            <Route path="/locationform" element={<OfficeData />} />
             <Route path='/clients' element={<ClientList />} />
             <Route path='/locations' element={<Locations />} />
             <Route path="/sales" element={<ViewSales />}/>

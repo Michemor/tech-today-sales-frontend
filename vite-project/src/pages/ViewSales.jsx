@@ -1,6 +1,6 @@
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { getSales } from "../services/clientServices";
@@ -71,9 +71,10 @@ export const ViewSales = () => {
     return(
         <>
         <Breadcrumbs aria-label="breadcrumb">
-            <Typography>Home</Typography>
-            <Typography>Sales</Typography>
-            <Typography color="text.primary">View Sales</Typography>
+          <Link href="/" underline="hover" sx={{ textDecoration: 'none', color: 'inherit' }}>
+                    Home
+                </Link>
+            <Typography color="text.primary"> Sales </Typography>
         </Breadcrumbs>
         <Paper
         elevation={3}
