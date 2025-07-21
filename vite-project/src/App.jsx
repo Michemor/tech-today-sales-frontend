@@ -29,6 +29,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled, useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
+import CompleteData from "./components/CompleteData";
 
 const drawerWidth = 240;
 
@@ -191,6 +192,7 @@ export default function App() {
             <Route path='/clients' element={<ClientList />} />
             <Route path='/locations' element={<Locations />} />
             <Route path="/sales" element={<ViewSales />}/>
+            <Route path="/client/:id" element={<CompleteData />} />
         </Routes>
       </Main>
 

@@ -22,7 +22,7 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
   }, [setOfficeDetails]);
 
   const updateOtherIndustry = useCallback((event) => {
-    setOfficeDetails(prev => ({ ...prev, other_industry: event.target.value, industry: event.target.value }));
+    setOfficeDetails(prev => ({ ...prev, industry: event.target.value }));
   }, [setOfficeDetails]);
 
   const handleCategoryChange = useCallback((event) => {
@@ -75,46 +75,6 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
             fullWidth
             />
             <TextField 
-                label="Number of offices"
-                value={officeDetails.number_of_offices}
-                name="number_of_offices"
-                onChange={handlePositiveIntegerChange('number_of_offices')}
-                variant="outlined"
-                type="number"
-                inputProps={{ 
-                  min: 1,
-                  step: 1,
-                  pattern: "[1-9][0-9]*"
-                }}
-                onKeyDown={(e) => {
-                  // Prevent typing negative signs, decimal points, and 'e'
-                  if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E' || e.key === '+') {
-                    e.preventDefault();
-                  }
-                }}
-                required
-                sx={{ width: '100%', mt: 2 }}
-                />
-            <TextField
-            label="Number of Staff"
-            name='number_staff'
-            value={officeDetails.number_staff}
-            onChange={handlePositiveIntegerChange('number_staff')}
-            required
-            type="number"
-            inputProps={{ 
-              min: 1,
-              step: 1,
-              pattern: "[1-9][0-9]*"
-            }}
-            onKeyDown={(e) => {
-              // Prevent typing negative signs, decimal points, and 'e'
-              if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E' || e.key === '+') {
-                e.preventDefault();
-              }
-            }}
-            variant="outlined"/>
-             <TextField 
                 type="number"
                 label="Office Floor"
                 name="office_floor"
@@ -134,6 +94,28 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
                 }}
                 required
                 sx={{ width: '100%', mt: 2 }}/>
+            <TextField
+            label="Number of Staff"
+            name='number_staff'
+            value={officeDetails.number_staff}
+            onChange={handlePositiveIntegerChange('number_staff')}
+            required
+            type="number"
+            slotProps={{
+              input: {
+                min: 1,
+                step: 1,
+                pattern: "[1-9][0-9]*"
+              }
+            }}
+            onKeyDown={(e) => {
+              // Prevent typing negative signs, decimal points, and 'e'
+              if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                e.preventDefault();
+              }
+            }}
+            variant="outlined"/>
+             
             <Box
             sx={{
               border: '1px solid',
@@ -161,17 +143,26 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
               <TextField
                 label="Specify Other Industry"
                 name='other_industry'
-                value={officeDetails.other_industry || ''}
+                value={officeDetails.industry || ''}
                 onChange={updateOtherIndustry}
                 variant="outlined"
                 fullWidth
               />
             )}
             </Box> 
-             
-            </Stack>
-        </Paper>
-        </>
+            <TextField
+            label="Additional Information"
+            name='more_offices'
+            value={officeDetails.more_offices || ''}
+            onChange={updateField('more_offices')}
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={4}
+          />
+        </Stack>
+    </Paper>
+    </>
     )
 
 })

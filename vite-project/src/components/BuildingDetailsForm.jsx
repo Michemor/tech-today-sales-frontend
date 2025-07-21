@@ -86,21 +86,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
             </RadioGroup>
           </FormControl>
         </Box>
-        
-        <TextField
-          name='more_offices'
-          value={buildingDetails.more_offices || ''}
-          onChange={updateField('more_offices')}
-          label="More information on offices i.e floor and name"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={isMobile ? 3 : 4}
-          required
-          size={isMobile ? 'small' : 'medium'}
-        />
-        
-        <Box sx={{
+           <Box sx={{
           border: '1px solid',
           borderColor: 'secondary.dark',
           borderRadius: 1,
@@ -141,7 +127,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
             </RadioGroup>
           </FormControl>
         </Box>
-        
+         
         <TextField
           name='more_info_access'
           value={buildingDetails.more_info_access || ''}
@@ -150,6 +136,26 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
           variant="outlined"
           fullWidth
           multiline
+          rows={isMobile ? 3 : 4}
+          required
+          size={isMobile ? 'small' : 'medium'}
+        />
+        
+        <TextField
+          name='number_offices'
+          value={buildingDetails.number_offices || ''}
+          onChange={updateField('number_offices')}
+          label="Number of Offices in the Building"
+          variant="outlined"
+          fullWidth
+          type="number"
+          slotProps={{
+            input: {
+              min: 1,
+              step: 1,
+              pattern: "[1-9][0-9]*"
+            }
+          }}
           rows={isMobile ? 3 : 4}
           required
           size={isMobile ? 'small' : 'medium'}

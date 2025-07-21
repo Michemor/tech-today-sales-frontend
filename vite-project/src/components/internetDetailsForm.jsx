@@ -29,15 +29,15 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
     }, [setInternetDetails]);
 
     const updateOtherISP = useCallback((event) => {
-        setInternetDetails(prev => ({ ...prev, other_isp: event.target.value, isp_name: event.target.value }));
+        setInternetDetails(prev => ({ ...prev, isp_name: event.target.value }));
     }, [setInternetDetails]);
 
     const updateOtherPrice = useCallback((event) => {
-        setInternetDetails(prev => ({ ...prev, other_price: event.target.value, net_price: event.target.value }));
+        setInternetDetails(prev => ({ ...prev, net_price: event.target.value }));
     }, [setInternetDetails]);
 
     const updateOtherProduct = useCallback((event) => {
-        setInternetDetails(prev => ({ ...prev, other_product: event.target.value, product: event.target.value }));
+        setInternetDetails(prev => ({ ...prev, product: event.target.value }));
     }, [setInternetDetails]);
 
     const handleISPChange = useCallback((event) => {
@@ -138,7 +138,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                     { currentSelection === 'Other' && (
                     <TextField
                     name="other_isp"
-                    value={internetDetails.other_isp || ''}
+                    value={internetDetails.isp_name || ''}
                     onChange={updateOtherISP}
                     label="If Other indicate the ISP name"
                     variant="outlined"
@@ -170,7 +170,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                   {currentPrice === 'Other' && (
                      <TextField
                   name='other_price'
-                  value={internetDetails.other_price || ''}
+                  value={internetDetails.net_price || ''}
                   onChange={updateOtherPrice}
                   label="If Other indicate the price"
                   variant="outlined"
@@ -217,7 +217,7 @@ export const InternetDetailsForm = memo(({ internetDetails, setInternetDetails }
                            label="If other indicate the product"
                            name="other_product"
                            fullWidth
-                           value={internetDetails.other_product || ''}
+                           value={internetDetails.product || ''}
                            onChange={updateOtherProduct}
                            variant="outlined"
                             />

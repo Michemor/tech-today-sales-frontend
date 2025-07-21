@@ -24,7 +24,6 @@ export const sendClientData = async (clientData) => {
         const response = await axiosInstance.post(`/salesdetails`, clientData);
         return response.data;
 
-
     } catch (error) {
         console.error("Error sending data:", error);
         throw error;
@@ -239,18 +238,31 @@ export const updateInternet = async (newInternet) => {
 }
 
 
-export const getSalesData = async () => {
+export const getSales = async () => {
     try {
         const response = await axiosInstance.get(`/sales`);
-        
         if (response.data.success) {
             console.log("Sales data retrieved successfully:", response.data.message);
-            return response.data.sales;
+            return response.data.sales_data;
         }
     } catch (error) {
         console.error("Error retrieving sales data:", error);
         throw error;
     }
-
     return [];
 }
+
+export const getClientData = async (id) => {
+    try {
+        console.log("Retrieving client data for ID:", id);
+      const response = await axiosInstance.get(`/sales/${id}`);
+            if (response.data.success) {
+                console.log("Sales data retrieved successfully:", response.data.message);
+                return response.data.client_data;
+            }
+    } catch (error) {
+        console.error("Error retrieving client data:", error);
+        throw error;
+    }
+}
+

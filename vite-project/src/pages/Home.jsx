@@ -16,8 +16,6 @@ import { BuildingDetailsForm } from '../components/BuildingDetailsForm'
 import CssBaseline from "@mui/material/CssBaseline";
 import Fab from "@mui/material/Fab";
 import AddIcon from '@mui/icons-material/Add';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -39,7 +37,6 @@ export default function Home() {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const navigate = useNavigate();
     
-    const [anchorEl, setAnchorEl] = useState(null);
     const [comprehensiveFormOpen, setComprehensiveFormOpen] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
     const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -70,38 +67,25 @@ export default function Home() {
     const [officeDetails, setOfficeDetails] = useState({});
     const [meetingDetails, setMeetingDetails] = useState({});
     const [internetDetails, setInternetDetails] = useState({
+      is_connected: '',
       isp_name: '',
-      net_price: '',
+      connection_type: '',
       product: '',
-      other_isp: '',
-      other_price: '',
-      other_product: '',
-      is_connected: ''
+      net_price: '',
+      deal_status: '',
     });
     const [buildingDetails, setBuildingDetails] = useState({
       building_name: '',
       is_fibre_setup: '',
-      more_offices: '',
       ease_of_access: '',
-      more_info_access: ''
+      more_info_access: '',
+      number_offices: '',
     });
     
     const steps = ['Client Details', 'Meeting Details', 'Internet Details', 'Building Details', 'Office Details'];
-    const open = Boolean(anchorEl);
-    
-    const handleFabClick = (event) => {
-      setAnchorEl(event.currentTarget);
-    };
-    
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-
-
     const handleComprehensiveFormOpen = () => {
       setComprehensiveFormOpen(true);
       setActiveStep(0);
-      handleClose();
     };
 
     const handleComprehensiveFormClose = () => {
@@ -266,7 +250,7 @@ export default function Home() {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-            <Fab onClick={handleFabClick} color="primary" aria-label="add" sx={{
+            <Fab onClick={handleComprehensiveFormOpen} color="primary" aria-label="add" sx={{
               position: 'fixed',
               bottom: 16,
               right: 16,
@@ -274,35 +258,7 @@ export default function Home() {
             }}>
               <AddIcon />
             </Fab>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              slotProps={{
-                list: {
-                  'aria-labelledby': 'basic-button',
-                }
-              }}
-              sx={{
-                '& .MuiPaper-root': {
-                  backgroundColor: '#ffffff',
-                  color: 'primary.main',
-                }
-              }}
-            >
-              <MenuItem onClick={handleComprehensiveFormOpen}>
-                Sales Details Form
-              </MenuItem>
-            </Menu>
+            
           </Stack>
         </Box>
         <Box sx={{ 
