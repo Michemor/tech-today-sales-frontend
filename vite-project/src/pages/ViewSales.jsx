@@ -1,13 +1,14 @@
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { getSales } from "../services/clientServices";
 import { DataGrid } from '@mui/x-data-grid';
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Box from "@mui/material/Box";
+
 
 
 export const ViewSales = () => {
@@ -70,12 +71,7 @@ export const ViewSales = () => {
 
     return(
         <>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link href="/" underline="hover" sx={{ textDecoration: 'none', color: 'inherit' }}>
-                    Home
-                </Link>
-            <Typography color="text.primary"> Sales </Typography>
-        </Breadcrumbs>
+        <Box>
         <Paper
         elevation={3}
         sx = {{
@@ -93,12 +89,24 @@ export const ViewSales = () => {
             </Typography>
             <Divider/>
             <Autocomplete
-                options={salesData}
-                getOptionLabel={(option) => option.name}
-                renderInput={(params) => <TextField {...params} label="Search Clients" variant="outlined"
-                sx={{ borderRadius: 10, mt: 2 }} />}
-                onChange={(_, value) => {
-                    value ? HandleRowClick(value.id) : null;
+                freeSolo
+                options={salesData.map((option) => option.name)}
+                renderInput={(params) => (
+                    <TextField  variant="outlined" {...params} label="Search by Client Name" />
+                )}
+                sx={{ marginTop: 2, marginBottom: 2 }}
+                selectOnFocus
+                clearOnBlur
+                handleHomeEndKeys
+                onChange={(event, value) => {
+                    setTimeout(() => {
+                    if (value) {
+                        const selectedClient = salesData.find(client => client.name === value);
+                        if (selectedClient) {
+                            HandleRowClick(selectedClient.id);
+                        }
+                    }
+                }, 500); 
                 }}
             />
            <DataGrid
@@ -121,6 +129,7 @@ export const ViewSales = () => {
                }}
            />
         </Paper>
+        </Box>
         </>
     )
 }

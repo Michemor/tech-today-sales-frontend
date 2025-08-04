@@ -31,6 +31,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { sendClientData } from '../services/clientServices';
+import Grid from '@mui/material/Grid';
 
 export default function Home() {
     const theme = useTheme();
@@ -232,13 +233,15 @@ export default function Home() {
               fontSize: { xs: 20, sm: 25, md: 30 },
               color: 'primary.main',
               fontWeight: 'bold',
-              marginBottom: 1
+              marginBottom: 1,
+              textAlign: 'center'
             }}>
             Welcome to Sales Department
           </Typography>
           <Typography sx={{
             fontSize: { xs: 12, sm: 15, md: 18 },
-            color: 'text.secondary'
+            color: 'text.secondary',
+            textAlign: 'center'
           }}>
             Click on the tiles below to access the actions
           </Typography>
@@ -267,67 +270,44 @@ export default function Home() {
           alignItems: 'center',
           gap: 3,
           width: '100%',
-          maxWidth: 800
+          maxWidth: 1200,
+          mx: 'auto',
+          px: { xs: 1, sm: 2, md: 3 }
         }}>
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={3} 
+          <Grid 
+            container 
+            spacing={{ xs: 2, sm: 3, md: 4 }}
             sx={{ 
               width: '100%',
               justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <CustomCard 
-              title='Client Details List'
-              message="View and manage client details."
-              icon={<GroupRoundedIcon sx={{ color: 'primary.main' }} />} 
-              onClick={() => handleClick('/clients')} 
-            />
-            <CustomCard 
-              title='Sales Location List' 
-              message="View and manage sales locations."
-              icon={<PinDropRoundedIcon sx={{ color: 'primary.main' }} />} 
-              onClick={() => handleClick('/locations')} 
-            />
-          </Stack>
-          
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={3} 
-            sx={{ 
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <CustomCard 
-              title='Client Details Form'
-              message="Fill out the form to add or edit client details."
-              icon={<NotesRoundedIcon sx={{ color: 'primary.main' }} />} 
-              onClick={() => handleClick('/clientform')} 
-            />
-            <CustomCard 
-              title='Sales Location Form' 
-              message="Fill out the form to add or edit sales location details."
-              icon={<EditNoteRoundedIcon sx={{ color: 'primary.main' }} />} 
-              onClick={() => handleClick('/locationform')} 
-            />
-          </Stack>
-          
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={3} 
-            sx={{ 
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <CustomCard 
-              title='Complete Details Form' 
-              message="Fill out all details in a step-by-step process: Client, Meeting, Internet, Building & Office."
-              icon={<EditNoteRoundedIcon sx={{ color: 'success.main' }} />} 
-              onClick={handleComprehensiveFormOpen} 
-            />
-          </Stack>
+              alignItems: 'stretch'
+            }}
+          >
+            <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
+              <CustomCard 
+                title='Client Details List'
+                message="View and manage client details."
+                icon={<GroupRoundedIcon sx={{ color: 'primary.main' }} />} 
+                onClick={() => handleClick('/clients')} 
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
+              <CustomCard 
+                title='Sales Location List' 
+                message="View and manage sales locations."
+                icon={<PinDropRoundedIcon sx={{ color: 'primary.main' }} />} 
+                onClick={() => handleClick('/locations')} 
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
+              <CustomCard 
+                title='Complete Details Form' 
+                message="Fill out all details in a step-by-step process: Client, Meeting, Internet, Building & Office."
+                icon={<EditNoteRoundedIcon sx={{ color: 'success.main' }} />} 
+                onClick={handleComprehensiveFormOpen} 
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Box>
 

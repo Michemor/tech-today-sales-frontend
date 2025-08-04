@@ -1,5 +1,6 @@
 import OfficeData from "../src/pages/BuildingOfficeList";
 import ClientData from "../src/pages/ClientData";
+import OfficeDataPage from "../src/pages/OfficeData";
 import { Routes, Route } from "react-router";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -30,6 +31,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled, useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import CompleteData from "./components/CompleteData";
+import BreadcrumbNavigation from "./components/BreadcrumbNavigation";
 
 const drawerWidth = 240;
 
@@ -190,12 +192,15 @@ export default function App() {
 
       <Main open={open}>
         <DrawerHeader />
+        <BreadcrumbNavigation />
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path='/clients' element={<ClientList />} />
             <Route path='/locations' element={<Locations />} />
             <Route path="/sales" element={<ViewSales />}/>
             <Route path="/client/:id" element={<CompleteData />} />
+            <Route path="/clientdata" element={<ClientData />} />
+            <Route path="/officedata" element={<OfficeDataPage />} />
         </Routes>
       </Main>
 
