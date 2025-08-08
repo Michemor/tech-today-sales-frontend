@@ -1,4 +1,5 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { getBuildingNames } from '../services/clientServices'; // Adjust the import path as necessary
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -12,16 +13,33 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Autocomplete from '@mui/material/Autocomplete';
+
 
 export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [buildings, setBuildings] = useState([]);
   
   // Memoized update functions for better performance
   const updateField = useCallback((field) => (event) => {
     setBuildingDetails(prev => ({ ...prev, [field]: event.target.value }));
   }, [setBuildingDetails]);
-  
+
+  useEffect(() => {
+    const fetchBuildingNames = async () => {
+      const names = await getBuildingNames();
+      setBuildings(names);
+    };
+    fetchBuildingNames();
+  }, [setBuildings]);
+
+  const updateAutoCompleteField = useCallback((field) => (e, newValue) => {
+    setBuildingDetails(prev => ({ ...prev, [field]: newValue }));
+  }, [setBuildingDetails]);
+
   return (
     <Paper sx={{
       border: '1px solid',
@@ -44,17 +62,26 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
         </Typography>
         <Divider/>
         
-        <TextField
-          name='building_name'
-          value={buildingDetails.building_name || ''}
-          onChange={updateField('building_name')}
-          label="Building Name"
-          variant="outlined"
-          fullWidth
-          required
-          size={isMobile ? 'small' : 'medium'}
-        />
-        
+        <Autocomplete
+          options={buildings}
+          freeSolo
+          value={buildingDetails.building_name}
+          onChange={updateAutoCompleteField('building_name')}
+          onInputChange={(event, newValue) => {
+            // Update building name in state when input changes
+            setBuildingDetails(prev => ({ ...prev, building_name: newValue }));
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Building Name"
+              variant="outlined"
+              fullWidth
+              required
+              size={isMobile ? 'small' : 'medium'}
+            />
+          )}/>
+
         <Box sx={{
           border: '1px solid',
           borderColor: 'divider',

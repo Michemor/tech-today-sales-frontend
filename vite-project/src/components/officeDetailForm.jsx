@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useEffect, useCallback, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -10,11 +10,13 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { useState } from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
+import { getOfficeNames } from '../services/clientServices'; // Adjust the import path as necessary
 
 
 export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
   const [currentCategory, setCurrentCategory] = useState(officeDetails.industry || '');
+  const [officeName, setOfficeName] = useState();
 
   // Memoized update functions for better performance
   const updateField = useCallback((field) => (event) => {
@@ -29,6 +31,10 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
     const newCategory = event.target.value;
     setCurrentCategory(newCategory);
     setOfficeDetails(prev => ({ ...prev, industry: newCategory }));
+  }, [setOfficeDetails]);
+
+  const updateAutoCompleteField = useCallback((field) => (e, newValue) => {
+    setOfficeDetails(prev => ({ ...prev, [field]: newValue }));
   }, [setOfficeDetails]);
 
   const handlePositiveIntegerChange = useCallback((fieldName) => (event) => {
@@ -46,6 +52,15 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
       setOfficeDetails(prev => ({ ...prev, [fieldName]: value }));
     }
   }, [setOfficeDetails]);
+
+  useEffect(() => {
+    const fetchOfficeNames = async () => {
+      const names = await getOfficeNames();
+      setOfficeName(names);
+    };
+    fetchOfficeNames();
+
+  }, [setOfficeName]);
 
     return (
         <>
@@ -65,15 +80,27 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
               textAlign: 'center',
             }}> Office Details </Typography>
             <Divider/>
-            <TextField
-            label="Office Name"
-            name='office_name'
-            value={officeDetails.office_name}
-            onChange={updateField('office_name')}
-            required
-            variant="outlined"
-            fullWidth
+            
+            <Autocomplete
+              options={officeName || []}
+              freeSolo
+              value={officeDetails.office_name}
+              onChange={updateAutoCompleteField('office_name')}
+              onInputChange={(event, newValue) => {
+                // Update office name in state when input changes
+                setOfficeDetails(prev => ({ ...prev, office_name: newValue }));
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Office Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                />
+              )}
             />
+
             <TextField 
                 type="number"
                 label="Office Floor"
@@ -81,10 +108,11 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
                 value={officeDetails.office_floor}
                 onChange={handlePositiveIntegerChange('office_floor')}
                 variant="outlined"
-                inputProps={{ 
-                  min: 1,
-                  step: 1,
-                  pattern: "[1-9][0-9]*"
+                slotProps={{
+                  input: {
+                    min: 0,
+                    pattern: "[1-9][0-9]*"
+                  }
                 }}
                 onKeyDown={(e) => {
                   // Prevent typing negative signs, decimal points, and 'e'
@@ -104,7 +132,6 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
             slotProps={{
               input: {
                 min: 1,
-                step: 1,
                 pattern: "[1-9][0-9]*"
               }
             }}

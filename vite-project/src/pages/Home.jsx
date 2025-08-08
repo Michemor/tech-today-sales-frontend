@@ -65,7 +65,13 @@ export default function Home() {
       job: '',
       deal_info: ''
     });
-    const [officeDetails, setOfficeDetails] = useState({});
+    const [officeDetails, setOfficeDetails] = useState({
+      office_name: '',
+      office_floor: '',
+      number_staff: '',
+      industry: '',
+      more_offices: '',
+    });
     const [meetingDetails, setMeetingDetails] = useState({});
     const [internetDetails, setInternetDetails] = useState({
       is_connected: '',
@@ -148,7 +154,9 @@ export default function Home() {
           job: '',
           deal_info: ''
         });
-        setMeetingDetails({});
+        setMeetingDetails({
+          
+        });
         setInternetDetails({
           isp_name: '',
           net_price: '',
@@ -165,7 +173,13 @@ export default function Home() {
           ease_of_access: '',
           more_info_access: ''
         });
-        setOfficeDetails({});
+        setOfficeDetails({
+           office_name: '',
+           office_floor: '',
+           number_staff: '',
+           industry: '',
+           more_offices: '',
+        });
       }
     };
 

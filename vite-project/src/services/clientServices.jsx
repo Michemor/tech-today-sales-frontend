@@ -195,3 +195,31 @@ export const getClientData = async (id) => {
     }
 }
 
+export const getBuildingNames = async () => {
+    try {
+        const response = await axiosInstance.get(`/building_names`);
+        if (response.data.success) {
+            console.log("Building names retrieved successfully:", response.data.building_names);
+            return response.data.building_names;
+        }
+    } catch (error) {
+        console.error("Error retrieving building names:", error);
+        throw error;
+    }
+    return [];
+}
+
+
+export const getOfficeNames = async () => {
+    try {
+        const response = await axiosInstance.get(`/office_names`);
+        if (response.data.success) {
+            console.log("Office names retrieved successfully:", response.data.office_names);
+            return response.data.office_names;
+        }
+    } catch (error) {
+        console.error("Error retrieving office names:", error);
+        throw error;
+    }
+    return [];
+}
