@@ -115,15 +115,15 @@ export const ViewSales = () => {
                getRowId={(row) => row.id}
                initialState={{
                 pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
+                    paginationModel: { page: 0, pageSize: 20 },
                 }
                }}
-               pageSize={5}
+               pageSize={20}
                onRowClick={(params) => {
                    console.log('DataGrid row clicked:', params.row);
                    HandleRowClick(params.row.id);
                }}
-               rowsPerPageOptions={[5]}
+               rowsPerPageOptions={[20, 50, 100]}
                sx={{
                 mt: 2,
                }}

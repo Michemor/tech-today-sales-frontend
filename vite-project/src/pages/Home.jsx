@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Stack from "@mui/material/Stack";
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import PinDropRoundedIcon from '@mui/icons-material/PinDropRounded';
-import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
+import GroupIcon from '@mui/icons-material/Group';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import CustomCard from '../components/CustomCard'
 import { ClientDetailsForm } from '../components/ClientDetailsForm'
@@ -32,6 +32,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { sendClientData } from '../services/clientServices';
 import Grid from '@mui/material/Grid';
+import { StatusCard } from '../components/Status';
 
 export default function Home() {
     const theme = useTheme();
@@ -133,15 +134,15 @@ export default function Home() {
             setActiveStep(0);
           }, 2000);
         } else {
-          showAlert('error', `Failed to submit data. Please try again,`);
-          console.log('Failed to submit data:', response?.message || 'Unknown error');
+          showAlert('error', `Failed to submit data. Error: ${response.message},`);
+          console.log('Failed to submit data:', response.message || 'Unknown error');
           // Close dialog and reset form even on failure
           setComprehensiveFormOpen(false);
           setActiveStep(0);
         }
       } catch (error) {
         console.error('Error submitting data:', error);
-        showAlert('error', 'Failed to submit data. Please try again.');
+        showAlert('error', 'Failed to submit data. Error: ' + error.message);
         // Close dialog and reset form even on error
         setComprehensiveFormOpen(false);
         setActiveStep(0);
@@ -259,6 +260,19 @@ export default function Home() {
           }}>
             Click on the tiles below to access the actions
           </Typography>
+
+            <Box sx={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 3,
+          width: '100%',
+          maxWidth: 1200,
+          mx: 'auto',
+          px: { xs: 1, sm: 2, md: 3 }
+        }}> 
+       <StatusCard/>
+      </Box>
           <Stack 
             direction={{ xs: 'column', sm: 'row' }} 
             spacing={3} 
@@ -299,18 +313,18 @@ export default function Home() {
           >
             <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
               <CustomCard 
-                title='Client Details List'
-                message="View and manage client details."
+                title='Potential Client List'
+                message="View potential clients."
                 icon={<GroupRoundedIcon sx={{ color: 'primary.main' }} />} 
-                onClick={() => handleClick('/clients')} 
+                onClick={() => handleClick('/potentialclients')} 
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
               <CustomCard 
-                title='Sales Location List' 
-                message="View and manage sales locations."
+                title='Building Details' 
+                message="View and manage building details."
                 icon={<PinDropRoundedIcon sx={{ color: 'primary.main' }} />} 
-                onClick={() => handleClick('/locations')} 
+                onClick={() => handleClick('/buildings')} 
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex' }}>
@@ -324,6 +338,7 @@ export default function Home() {
           </Grid>
         </Box>
       </Box>
+
 
       {/* Comprehensive Form Modal */}
       <Dialog

@@ -21,12 +21,12 @@ const BreadcrumbNavigation = ({ customPaths = {}, currentTab = null }) => {
       label: 'Home', 
       icon: <HomeIcon sx={{ fontSize: 16, mr: 0.5 }} /> 
     },
-    '/clients': { 
-      label: 'Clients', 
+    '/potentialclients': { 
+      label: 'Potential Clients', 
       icon: <PeopleIcon sx={{ fontSize: 16, mr: 0.5 }} /> 
     },
-    '/locations': { 
-      label: 'Locations', 
+    '/buildings': { 
+      label: 'Buildings', 
       icon: <LocationOnIcon sx={{ fontSize: 16, mr: 0.5 }} /> 
     },
     '/sales': { 
@@ -50,13 +50,13 @@ const BreadcrumbNavigation = ({ customPaths = {}, currentTab = null }) => {
 
   // Tab labels for pages with tabs
   const tabLabels = {
-    '/clients': {
+    '/potentialclients': {
       '1': 'Clients List',
       '2': 'Meetings',
       '3': 'Offices',
       '4': 'Internet'
     },
-    '/locations': {
+    '/buildings': {
       '1': 'Buildings',
       '2': 'Offices'
     }

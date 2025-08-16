@@ -36,8 +36,9 @@ export const OfficeList = () => {
         { field: 'office_id', headerName: 'ID', width: 90 },
         { field: 'office_name', headerName: 'Office Name', width: 150 },
         { field: 'staff_number', headerName: 'Office Floor', width: 150 },
-        { field: 'industry_category', headerName: 'More Data on Office', width: 200 },
-        { field: 'client_id', headerName: 'Client ID', width: 200 },
+        { field: 'industry_category', headerName: 'Industry Category', width: 200 },
+        { field: 'more_data_on_office', headerName: 'More Data on Office', width: 200 },
+        { field: 'building_id', headerName: 'Building ID', width: 200 },
     ]
 
     return (

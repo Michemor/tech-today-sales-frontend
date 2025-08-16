@@ -1,6 +1,3 @@
-import OfficeData from "../src/pages/BuildingOfficeList";
-import ClientData from "../src/pages/ClientData";
-import OfficeDataPage from "../src/pages/OfficeData";
 import { Routes, Route } from "react-router";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -32,7 +29,6 @@ import { styled, useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import CompleteData from "./components/CompleteData";
 import BreadcrumbNavigation from "./components/BreadcrumbNavigation";
-
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -134,7 +130,7 @@ export default function App() {
             <AccountCircleRoundedIcon sx={{  color: '#ffffff', ml: 2 }} /> </IconButton>
         </Toolbar>
       </TopAppBar>
-      <Drawer
+      <Drawer 
       sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -142,6 +138,7 @@ export default function App() {
             width: drawerWidth,
             boxSizing: 'border-box',
           },
+         
         }}
         variant="persistent"
         anchor='left'
@@ -174,7 +171,7 @@ export default function App() {
                   <ListItemText primary="Home" />
                   </ListItemButton>
                   </ListItem>
-            {['Clients', 'Locations', 'Sales'].map((text, index) => (
+            {['Potential Clients', 'Buildings', 'Sales'].map((text, index) => (
               <ListItem key={text} disablePadding>
                     <ListItemButton onClick={() => handleNavigation(`/${text.toLowerCase().replace(' ', '')}`)}>
                   <ListItemIcon sx={{ color: 'primary.main' }}>
@@ -195,13 +192,11 @@ export default function App() {
         <BreadcrumbNavigation />
         <Routes>
             <Route path="/" element={<Home />} />
-            <Route path='/clients' element={<ClientList />} />
-            <Route path='/locations' element={<Locations />} />
+            <Route path='/potentialclients' element={<ClientList />} />
+            <Route path='/buildings' element={<Locations />} />
             <Route path="/sales" element={<ViewSales />}/>
             <Route path="/client/:id" element={<CompleteData />} />
-            <Route path="/clientdata" element={<ClientData />} />
-            <Route path="/officedata" element={<OfficeDataPage />} />
-        </Routes>
+            </Routes>
       </Main>
 
         </>

@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useState } from 'react';
-import { getBuildingNames } from '../services/clientServices'; // Adjust the import path as necessary
+import { getBuildings } from '../services/officeService';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -13,9 +13,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import Autocomplete from '@mui/material/Autocomplete';
+import Collapse from '@mui/material/Collapse';
 
 
 export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }) => {
@@ -29,12 +28,15 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
   }, [setBuildingDetails]);
 
   useEffect(() => {
-    const fetchBuildingNames = async () => {
-      const names = await getBuildingNames();
+    const fetchBuildings = async () => {
+      const names = await getBuildings();
+      
       setBuildings(names);
     };
-    fetchBuildingNames();
+    fetchBuildings();
   }, [setBuildings]);
+
+  const buildingNames = buildings.map(building => building.building_name);
 
   const updateAutoCompleteField = useCallback((field) => (e, newValue) => {
     setBuildingDetails(prev => ({ ...prev, [field]: newValue }));
@@ -63,7 +65,7 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
         <Divider/>
         
         <Autocomplete
-          options={buildings}
+          options={buildingNames}
           freeSolo
           value={buildingDetails.building_name}
           onChange={updateAutoCompleteField('building_name')}
@@ -82,6 +84,8 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
             />
           )}/>
 
+          <Collapse in={Boolean(!buildingNames.includes(buildingDetails.building_name))}>
+          <Stack spacing={2}>
         <Box sx={{
           border: '1px solid',
           borderColor: 'divider',
@@ -187,6 +191,8 @@ export const BuildingDetailsForm = memo(({ buildingDetails, setBuildingDetails }
           required
           size={isMobile ? 'small' : 'medium'}
         />
+        </Stack>
+        </Collapse>
       </Stack>
     </Paper>
   );

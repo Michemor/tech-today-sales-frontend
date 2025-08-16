@@ -43,7 +43,7 @@ export const getBuildings = async () => {
 
         if (success) {
             console.log("Buildings retrieved successfully:", buildings);
-            return { success: true, buildings };
+            return buildings;
         }
     } catch (error) {
         console.error("Error retrieving buildings:", error);
@@ -53,9 +53,16 @@ export const getBuildings = async () => {
 
 }
 
-export const getOffices = async () => {
+// fetch offices with specific id
+export const getOffices = async (id) => {
     try {
-        const response = await axiosInstance.get(`/locations/offices`);
+        const response = await axiosInstance.get(`/locations/offices/${id}`);
+        // Check if the response contains success and offices
+        if (!response.data || !response.data.success) {
+            console.error("Failed to retrieve offices:", response.data);
+            return { success: false, offices: [] };
+        }
+
         const { success, offices } = response.data;
 
         if (success) {
@@ -69,14 +76,50 @@ export const getOffices = async () => {
     return { success: false, offices: [] };
 }
 
-export const deleteOffice = async (newOffice) => {
+// fetch all offices
+export const getAllOffices = async () => {
     try {
-        const response = await axiosInstance.delete(`/locations/office/${newOffice.office_id}`, newOffice);
+        const response = await axiosInstance.get(`/locations/offices`);
+        // Check if the response contains success and offices
+        if (!response.data || !response.data.success) {
+            console.error("Failed to retrieve offices:", response.data);
+            return [];
+        }
+
+        if (response.data.success) {
+            console.log(response.data.message, response.data.offices);
+            return response.data.offices;
+        }
+    } catch (error) {
+        console.error("Error retrieving offices:", error);
+        throw error;
+    }
+    return [];
+}
+
+// fetches office names
+export const getOfficeNames = async () => {
+     try {
+         const response = await axiosInstance.get(`/locations/offices/names`);
+         if (response.data.success) {
+             return response.data.names;
+         } else {
+            return [];
+         }
+     } catch (error) {
+         console.error("Error retrieving office names:", error);
+         throw error;
+     }
+}
+
+export const deleteOffice = async (office_id) => {
+    try {
+        const response = await axiosInstance.delete(`/locations/office/${office_id}`);
         const { success, message } = response.data;
 
         if (success) {
             console.log("Office deleted successfully:", message);
-            return { success: true, message };
+            return message;
         }
     } catch (error) {
         console.error("Error deleting office:", error);
@@ -85,14 +128,14 @@ export const deleteOffice = async (newOffice) => {
     return { success: false, message: "Failed to delete office" };
 }
 
-export const updateOffice = async (newOffice) => {
+export const updateOffice = async (id, newOffice) => {
     try {
-        const response = await axiosInstance.put(`/locations/office/${newOffice.office_id}`, newOffice);
+        const response = await axiosInstance.put(`/locations/office/${id}`, newOffice);
         const { success, message } = response.data;
 
         if (success) {
             console.log("Office updated successfully:", message);
-            return { success: true, message };
+            return message;
         }
     } catch (error) {
         console.error("Error updating office:", error);
@@ -117,19 +160,19 @@ export const deleteBuilding = async (buildingId) => {
     return { success: false, message: "Failed to delete building" };
 }
 
-export const updateBuilding = async (buildingData) => {
+export const updateBuilding = async (id, buildingData) => {
     if (!buildingData || Object.keys(buildingData).length === 0) {
         console.error("No building data provided to update.");
         return false;
     }
 
     try {
-        const response = await axiosInstance.put(`/locations/building/${buildingData.building_id}`, buildingData);
+        const response = await axiosInstance.put(`/locations/building/${id}`, buildingData);
         const { success, message } = response.data;
 
         if (success) {
             console.log("Building updated successfully:", message);
-            return { success: true, message };
+            return message;
         }
     } catch (error) {
         console.error("Error updating building data:", error);

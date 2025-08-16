@@ -22,23 +22,6 @@ const ClientList = () => {
     const [clients, setClients] = useState([]);
     const [value, setValue] = useState('1'); 
 
-    const [confirmDialog, setConfirmDialog] = useState({
-        open: false,
-        title: '',
-        content: '',
-        onConfirm: null
-    });
-
-    const handleConfirmClose = () => {
-        setConfirmDialog(prev => ({ ...prev, open: false }));
-    };
-
-    const handleConfirmAction = () => {
-        if (confirmDialog.onConfirm) {
-            confirmDialog.onConfirm();
-        }
-        handleConfirmClose();
-    };
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -78,36 +61,10 @@ const ClientList = () => {
             </Alert>
         )}
 
-        {/* Confirmation Dialog */}
-        <Dialog
-            open={confirmDialog.open}
-            onClose={handleConfirmClose}
-            aria-labelledby="confirm-dialog-title"
-            aria-describedby="confirm-dialog-description"
-        >
-            <DialogTitle id="confirm-dialog-title">
-                {confirmDialog.title}
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText id="confirm-dialog-description">
-                    {confirmDialog.content}
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleConfirmClose} color="primary">
-                    Cancel
-                </Button>
-                <Button onClick={handleConfirmAction} color="primary" variant="contained" autoFocus>
-                    Confirm
-                </Button>
-            </DialogActions>
-        </Dialog>
-
         <Tabs value={value} onChange={handleChange} centered>
-                <Tab label="Clients" value='1'/>
+                <Tab label="Potential Clients" value='1'/>
                 <Tab label="Meetings" value='2'/>
-                <Tab label="Offices" value='3'/>
-                <Tab label="Internet" value='4'/>
+                <Tab label="Internet" value='3'/>
             </Tabs>
         <Box>
             <Collapse in={value === '1'} timeout="auto" unmountOnExit>
@@ -124,11 +81,11 @@ const ClientList = () => {
                     getRowId={(row) => row.client_id}
                     initialState={{
                         pagination: {
-                            paginationModel: { pageSize: 10, page: 0 },
+                            paginationModel: { pageSize: 20, page: 0 },
                         },
                     }}
                     density="comfortable"
-                    pageSizeOptions={[5, 10, 20]}>
+                    pageSizeOptions={[10, 20, 50, 100]}>
                 </DataGrid>
             </Paper>
             </Collapse>
@@ -139,10 +96,6 @@ const ClientList = () => {
         </Collapse>
 
         <Collapse in={value === '3'} mountOnEnter unmountOnExit>
-        <OfficeList/>
-            </Collapse>
-
-        <Collapse in={value === '4'} mountOnEnter unmountOnExit>
         <InternetList />
             </Collapse>
         </>

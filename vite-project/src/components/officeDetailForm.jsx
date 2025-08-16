@@ -11,12 +11,13 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Autocomplete from '@mui/material/Autocomplete';
-import { getOfficeNames } from '../services/clientServices'; // Adjust the import path as necessary
+import { getOfficeNames } from '../services/officeService';
+import { Collapse } from '@mui/material';
 
 
 export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
   const [currentCategory, setCurrentCategory] = useState(officeDetails.industry || '');
-  const [officeName, setOfficeName] = useState();
+  const [names, setNames] = useState([]);
 
   // Memoized update functions for better performance
   const updateField = useCallback((field) => (event) => {
@@ -54,13 +55,14 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
   }, [setOfficeDetails]);
 
   useEffect(() => {
-    const fetchOfficeNames = async () => {
-      const names = await getOfficeNames();
-      setOfficeName(names);
+    // fetch all offices data to check against the names
+    const fetchOffices = async () => {
+      const data = await getOfficeNames();
+      setNames(data || []);
     };
-    fetchOfficeNames();
+    fetchOffices();
 
-  }, [setOfficeName]);
+  }, [setNames]);
 
     return (
         <>
@@ -82,7 +84,7 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
             <Divider/>
             
             <Autocomplete
-              options={officeName || []}
+              options={names}
               freeSolo
               value={officeDetails.office_name}
               onChange={updateAutoCompleteField('office_name')}
@@ -101,6 +103,8 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
               )}
             />
 
+          <Collapse in={Boolean(!names.includes(officeDetails.office_name))}>
+          <Stack spacing={2}>
             <TextField 
                 type="number"
                 label="Office Floor"
@@ -187,6 +191,8 @@ export const OfficeDetailForm = memo(({ officeDetails, setOfficeDetails }) => {
             multiline
             rows={4}
           />
+          </Stack>
+          </Collapse>
         </Stack>
     </Paper>
     </>

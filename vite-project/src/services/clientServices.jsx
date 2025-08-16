@@ -22,7 +22,7 @@ export const sendClientData = async (clientData) => {
 
     try{
         const response = await axiosInstance.post(`/salesdetails`, clientData);
-        return response.data;
+        return response;
 
     } catch (error) {
         console.error("Error sending data:", error);
@@ -64,10 +64,10 @@ export const getMeetings = async () => {
 }
 
 // fetches offices data from the database
-export const getOffices = async () => {
+export const getOffices = async (id) => {
     try {
-        const response = await axiosInstance.get(`/offices`);
-        
+        const response = await axiosInstance.get(`/offices/${id}`);
+
         if (response.data.success) {
             console.log("Offices data retrieved successfully:", response.data);
             return response.data;
@@ -86,8 +86,8 @@ export const getInternet = async () => {
         const response = await axiosInstance.get(`/internet`);
         
         if (response.data.success) {
-            console.log("Internet data retrieved successfully:", response.data);
-            return response.data;
+            console.log("Internet data retrieved successfully:", response.data.internet);
+            return response.data.internet;
         }
     } catch (error) {
         console.error("Error retrieving internet data:", error);
@@ -146,6 +146,27 @@ export const deleteInternet = async(internetId) => {
         return response.data;
     } catch (error) {
         console.error("Error deleting internet:", error);
+        throw error;
+    }
+}
+
+export const deleteBuilding = async (buildingId) => {
+    if (!buildingId) {
+        console.error("No building ID provided to delete.");
+        return false;
+    }
+
+    try {
+        const response = await axiosInstance.delete(`/building/${buildingId}`);
+        console.log("Deleting building with ID:", buildingId);
+        if (response.data.success) {
+            return response.data.message;
+        } else {
+            console.error("Failed to delete building:", response.data.message);
+            return 'Failed to delete building';
+        }
+    } catch (error) {
+        console.error("Error deleting building:", error);
         throw error;
     }
 }
@@ -222,4 +243,18 @@ export const getOfficeNames = async () => {
         throw error;
     }
     return [];
+}
+
+export const getCount = async () => {
+    try {
+        const response = await axiosInstance.get(`/count`);
+        if (response.data.success) {
+            console.log("Client count & Meeting retrieved successfully:", response.data);
+            return response.data;
+        }
+    } catch (error) {
+        console.error("Error retrieving client count:", error);
+        throw error;
+    }
+    return { count: 0 };
 }
